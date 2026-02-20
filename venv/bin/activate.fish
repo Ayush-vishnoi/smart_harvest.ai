@@ -33,7 +33,7 @@ end
 # Unset irrelevant variables.
 deactivate nondestructive
 
-set -gx VIRTUAL_ENV "/Users/ayushvishnoi/Desktop/smart_harvest/venv"
+set -gx VIRTUAL_ENV "/Users/ayushvishnoi/Documents/GitHub/smart_harvest.ai/venv"
 
 set -gx _OLD_VIRTUAL_PATH $PATH
 set -gx PATH "$VIRTUAL_ENV/bin" $PATH

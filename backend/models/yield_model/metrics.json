@@ -1,5 +1,10 @@
 {
-  "mae": 6.4922,
-  "rmse": 90.939,
-  "r2": 0.9716
+  "mae": 1.2962,
+  "rmse": 2.733,
+  "r2": 0.79,
+  "overfitting_gap": 0.0957,
+  "train_years": "1997-2015",
+  "test_years": "2016-2020",
+  "leakage_removed": true,
+  "coconut_excluded": true
 }

@@ -1,4 +1,4 @@
-#!/Users/ayushvishnoi/Desktop/smart_harvest/venv/bin/python3
+#!/Users/ayushvishnoi/Documents/GitHub/smart_harvest.ai/venv/bin/python3
 # -*- coding: utf-8 -*-
 import re
 import sys

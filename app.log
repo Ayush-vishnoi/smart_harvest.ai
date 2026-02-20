@@ -1,0 +1,9 @@
+2026-02-20 23:43:34,468 [INFO] ✅ All models loaded successfully
+2026-02-20 23:43:34,473 [INFO] 🌾 Starting Smart Harvest AI
+2026-02-20 23:43:34,473 [INFO]    API (JSON): http://localhost:5001/api/health
+2026-02-20 23:43:34,473 [INFO]    Web (HTML): http://localhost:5001/web
+2026-02-20 23:43:34,473 [INFO]    Frontend logic separated into: backend/frontend.py
+ * Serving Flask app 'app_v2'
+ * Debug mode: off
+Address already in use
+Port 5001 is in use by another program. Either identify and stop that program, or start the server with a different port.

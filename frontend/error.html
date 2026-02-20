@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Error - Smart Harvest AI{% endblock %}
+{% block content %}
+<div class="container" style="text-align:center;padding-top:80px">
+    <div style="font-size:4rem;margin-bottom:20px">⚠️</div>
+    <h1 style="font-family:'Playfair Display',serif;font-size:2rem;color:var(--soil);margin-bottom:12px">Error</h1>
+    <p style="color:var(--muted);font-size:1.05rem">{{ message }}</p>
+    <div style="margin-top:32px">
+        <a href="{{ url_for('home') }}" class="btn btn-primary">Go Home</a>
+    </div>
+</div>
+{% endblock %}

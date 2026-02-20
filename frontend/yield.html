@@ -1,0 +1,382 @@
+{% extends "base.html" %}
+
+{% block title %}Yield Predictor - Smart Harvest AI{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <div class="page-label">🌾 Yield Prediction</div>
+        <h1 class="page-title">Crop Yield Predictor</h1>
+        <p class="page-sub">Choose your mode — quick and simple, or full detail for research accuracy.</p>
+    </div>
+    
+    <!-- Mode Switcher -->
+    <div class="mode-switcher">
+        <a href="{{ url_for('web_yield', mode='simple') }}" {% if mode == 'simple' %}class="active"{% endif %}>
+            👨‍🌾 Farmer Mode
+        </a>
+        <a href="{{ url_for('web_yield', mode='expert') }}" {% if mode == 'expert' %}class="active"{% endif %}>
+            🔬 Research Mode
+        </a>
+    </div>
+    
+    {% if error %}
+    <div class="error-card">⚠️ {{ error }}</div>
+    {% endif %}
+    
+    <!-- ═══════════ SIMPLE MODE ═══════════ -->
+    {% if mode == 'simple' %}
+    <div class="form-card">
+        <div style="background:rgba(61,122,69,0.06);border:1px solid rgba(61,122,69,0.12);border-radius:12px;padding:18px 20px;margin-bottom:28px">
+            <h3 style="font-size:1rem;font-weight:700;color:var(--soil);margin-bottom:4px">
+                👨‍🌾 Made for farmers, not engineers
+            </h3>
+            <p style="font-size:0.85rem;color:var(--muted);line-height:1.6">
+                Just tell us your crop, season, and field size — we'll estimate the rest with regional averages.
+            </p>
+        </div>
+        
+        <form method="POST" action="{{ url_for('web_yield', mode='simple') }}">
+            <input type="hidden" name="mode" value="simple">
+            
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>🌾 What crop are you growing?</label>
+                    <select name="crop" required>
+                        <option value="">Select your crop…</option>
+                        {% for crop in options.crops %}
+                        <option value="{{ crop }}" {% if form_data.get('crop') == crop %}selected{% endif %}>{{ crop|title }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>📅 Which season?</label>
+                    <select name="season" required>
+                        <option value="">Select season…</option>
+                        <option value="kharif" {% if form_data.get('season') == 'kharif' %}selected{% endif %}>Kharif (June–Oct, monsoon)</option>
+                        <option value="rabi" {% if form_data.get('season') == 'rabi' %}selected{% endif %}>Rabi (Nov–Apr, winter)</option>
+                        <option value="whole year" {% if form_data.get('season') == 'whole year' %}selected{% endif %}>Whole Year</option>
+                        <option value="summer" {% if form_data.get('season') == 'summer' %}selected{% endif %}>Summer</option>
+                        <option value="winter" {% if form_data.get('season') == 'winter' %}selected{% endif %}>Winter</option>
+                        <option value="autumn" {% if form_data.get('season') == 'autumn' %}selected{% endif %}>Autumn</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>📐 Field size (in acres)</label>
+                    <input type="number" name="area_acres" step="0.1" min="0.1" placeholder="e.g. 5" value="{{ form_data.get('area_acres', '') }}" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>🗺️ Which state?</label>
+                    <select name="state" required>
+                        <option value="">Select your state…</option>
+                        {% for state in options.states %}
+                        <option value="{{ state }}" {% if form_data.get('state') == state %}selected{% endif %}>{{ state|title }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            
+            <!-- Location Button -->
+            <div style="margin:20px 0;padding:16px;background:rgba(61,122,69,0.04);border:1px dashed rgba(61,122,69,0.2);border-radius:8px;text-align:center">
+                <button type="button" id="getLocationBtn" class="btn" style="background:linear-gradient(135deg,#3D7A45,#2C5F2D);color:white;padding:12px 24px;font-size:0.9rem">
+                    📍 Use My Current Location
+                </button>
+                <p id="locationStatus" style="margin-top:10px;font-size:0.85rem;color:var(--muted)"></p>
+            </div>
+            
+            <!-- Hidden defaults for simple mode -->
+            <input type="hidden" name="crop_year" value="2024">
+            <input type="hidden" name="district" value="">
+            <input type="hidden" id="latitude" name="latitude" value="20.5">
+            <input type="hidden" id="longitude" name="longitude" value="78.9">
+            <input type="hidden" id="total_rainfall_mm" name="total_rainfall_mm" value="800">
+            <input type="hidden" id="AvgTemp_C" name="AvgTemp_C" value="25">
+            <input type="hidden" id="Humidity_perc" name="Humidity_perc" value="65">
+            <input type="hidden" id="ph" name="ph" value="6.5">
+            <input type="hidden" id="organic_carbon_g_kg" name="organic_carbon_g_kg" value="20">
+            <input type="hidden" id="clay_g_kg" name="clay_g_kg" value="250">
+            <input type="hidden" id="sand_g_kg" name="sand_g_kg" value="400">
+            
+            <script>
+            document.getElementById('getLocationBtn').addEventListener('click', function() {
+                const btn = this;
+                const status = document.getElementById('locationStatus');
+                
+                btn.disabled = true;
+                btn.textContent = '🔄 Getting location...';
+                status.textContent = 'Requesting GPS access...';
+                status.style.color = '#D4A853';
+                
+                if (!navigator.geolocation) {
+                    status.textContent = '❌ Geolocation not supported by your browser';
+                    status.style.color = '#C84B31';
+                    btn.disabled = false;
+                    btn.textContent = '📍 Use My Current Location';
+                    return;
+                }
+                
+                navigator.geolocation.getCurrentPosition(
+                    function(position) {
+                        const lat = position.coords.latitude.toFixed(4);
+                        const lon = position.coords.longitude.toFixed(4);
+                        
+                        document.getElementById('latitude').value = lat;
+                        document.getElementById('longitude').value = lon;
+                        
+                        status.textContent = `✅ Location captured: ${lat}, ${lon}`;
+                        status.style.color = '#3D7A45';
+                        btn.textContent = '✓ Location Set';
+                        btn.style.background = 'linear-gradient(135deg,#2C5F2D,#1a3a20)';
+                        
+                        // Fetch climate data from API
+                        fetch(`/api/location-data?lat=${lat}&lon=${lon}`)
+                            .then(res => res.json())
+                            .then(data => {
+                                if (data.success) {
+                                    document.getElementById('total_rainfall_mm').value = data.rainfall || 800;
+                                    document.getElementById('AvgTemp_C').value = data.temperature || 25;
+                                    document.getElementById('Humidity_perc').value = data.humidity || 65;
+                                    document.getElementById('ph').value = data.ph || 6.5;
+                                    document.getElementById('organic_carbon_g_kg').value = data.organic_carbon || 20;
+                                    document.getElementById('clay_g_kg').value = data.clay || 250;
+                                    document.getElementById('sand_g_kg').value = data.sand || 400;
+                                    
+                                    // Auto-fill state dropdown
+                                    if (data.state) {
+                                        const stateSelect = document.querySelector('select[name="state"]');
+                                        const stateValue = data.state.toLowerCase();
+                                        for (let option of stateSelect.options) {
+                                            if (option.value.toLowerCase() === stateValue) {
+                                                stateSelect.value = option.value;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    
+                                    status.textContent = `✅ Location & climate data loaded for ${data.state ? data.state.toUpperCase() : data.region || 'your area'}`;
+                                }
+                            })
+                            .catch(() => {
+                                status.textContent = `✅ Location set. Using regional averages for climate data.`;
+                            });
+                        
+                        setTimeout(() => { btn.disabled = false; }, 2000);
+                    },
+                    function(error) {
+                        let msg = '❌ ';
+                        switch(error.code) {
+                            case error.PERMISSION_DENIED:
+                                msg += 'Location access denied. Please enable location permissions.';
+                                break;
+                            case error.POSITION_UNAVAILABLE:
+                                msg += 'Location unavailable. Please try again.';
+                                break;
+                            case error.TIMEOUT:
+                                msg += 'Location request timed out. Please try again.';
+                                break;
+                            default:
+                                msg += 'Unable to get location.';
+                        }
+                        status.textContent = msg;
+                        status.style.color = '#C84B31';
+                        btn.disabled = false;
+                        btn.textContent = '📍 Use My Current Location';
+                    },
+                    { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+                );
+            });
+            </script>
+            
+            <div class="btn-row">
+                <button type="submit" class="btn btn-primary">Get My Yield Estimate</button>
+                <a href="{{ url_for('web_yield', mode='simple') }}" class="btn btn-secondary">Reset</a>
+            </div>
+        </form>
+    </div>
+    {% endif %}
+    
+    <!-- ═══════════ EXPERT MODE ═══════════ -->
+    {% if mode == 'expert' %}
+    <div class="form-card" style="background:var(--soil);color:var(--cream)">
+        <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:18px 20px;margin-bottom:28px">
+            <h3 style="font-size:1rem;font-weight:700;color:#F5EDD8;margin-bottom:4px">
+                🔬 Full precision research mode
+            </h3>
+            <p style="font-size:0.85rem;color:rgba(245,237,216,0.6);line-height:1.6">
+                All 15 parameters exposed. More complete inputs = higher prediction accuracy.
+            </p>
+        </div>
+        
+        <form method="POST" action="{{ url_for('web_yield', mode='expert') }}">
+            <input type="hidden" name="mode" value="expert">
+            
+            <h4 style="font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--wheat);margin:28px 0 16px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,0.08)">
+                🌍 Location & Identification
+            </h4>
+            <div class="form-grid" style="grid-template-columns:repeat(3,1fr)">
+                <div class="form-group">
+                    <label style="color:rgba(245,237,216,0.6)">State</label>
+                    <select name="state" style="background:rgba(255,255,255,0.07);border-color:rgba(255,255,255,0.12);color:#F5EDD8">
+                        <option value="">Select…</option>
+                        {% for state in options.states %}
+                        <option value="{{ state }}">{{ state|title }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label style="color:rgba(245,237,216,0.6)">District</label>
+                    <select name="district" style="background:rgba(255,255,255,0.07);border-color:rgba(255,255,255,0.12);color:#F5EDD8">
+                        <option value="">Select…</option>
+                        {% for dist in options.districts[:100] %}
+                        <option value="{{ dist }}">{{ dist|title }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label style="color:rgba(245,237,216,0.6)">Crop Year</label>
+                    <input type="number" name="crop_year" value="2024" min="1990" max="2030" style="background:rgba(255,255,255,0.07);border-color:rgba(255,255,255,0.12);color:#F5EDD8">
+                </div>
+            </div>
+            
+            <h4 style="font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--wheat);margin:28px 0 16px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,0.08)">
+                🌾 Crop & Field
+            </h4>
+            <div class="form-grid" style="grid-template-columns:repeat(3,1fr)">
+                <div class="form-group">
+                    <label style="color:rgba(245,237,216,0.6)">Crop</label>
+                    <select name="crop" style="background:rgba(255,255,255,0.07);border-color:rgba(255,255,255,0.12);color:#F5EDD8">
+                        <option value="">Select…</option>
+                        {% for crop in options.crops %}
+                        <option value="{{ crop }}">{{ crop|title }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label style="color:rgba(245,237,216,0.6)">Season</label>
+                    <select name="season" style="background:rgba(255,255,255,0.07);border-color:rgba(255,255,255,0.12);color:#F5EDD8">
+                        <option value="">Select…</option>
+                        <option value="kharif">Kharif</option>
+                        <option value="rabi">Rabi</option>
+                        <option value="whole year">Whole Year</option>
+                        <option value="summer">Summer</option>
+                        <option value="winter">Winter</option>
+                        <option value="autumn">Autumn</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label style="color:rgba(245,237,216,0.6)">Area (hectares)</label>
+                    <input type="number" name="area" step="0.1" placeholder="e.g. 1200" style="background:rgba(255,255,255,0.07);border-color:rgba(255,255,255,0.12);color:#F5EDD8">
+                </div>
+            </div>
+            
+            <h4 style="font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--wheat);margin:28px 0 16px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,0.08)">
+                📍 GPS & Climate
+            </h4>
+            <div class="form-grid" style="grid-template-columns:repeat(3,1fr)">
+                <div class="form-group">
+                    <label style="color:rgba(245,237,216,0.6)">Latitude</label>
+                    <input type="number" name="latitude" step="0.0001" placeholder="e.g. 12.97" style="background:rgba(255,255,255,0.07);border-color:rgba(255,255,255,0.12);color:#F5EDD8">
+                </div>
+                <div class="form-group">
+                    <label style="color:rgba(245,237,216,0.6)">Longitude</label>
+                    <input type="number" name="longitude" step="0.0001" placeholder="e.g. 77.59" style="background:rgba(255,255,255,0.07);border-color:rgba(255,255,255,0.12);color:#F5EDD8">
+                </div>
+                <div class="form-group">
+                    <label style="color:rgba(245,237,216,0.6)">Rainfall (mm)</label>
+                    <input type="number" name="total_rainfall_mm" step="0.1" placeholder="e.g. 1200" style="background:rgba(255,255,255,0.07);border-color:rgba(255,255,255,0.12);color:#F5EDD8">
+                </div>
+                <div class="form-group">
+                    <label style="color:rgba(245,237,216,0.6)">Avg Temp (°C)</label>
+                    <input type="number" name="AvgTemp_C" step="0.1" placeholder="e.g. 25" style="background:rgba(255,255,255,0.07);border-color:rgba(255,255,255,0.12);color:#F5EDD8">
+                </div>
+                <div class="form-group">
+                    <label style="color:rgba(245,237,216,0.6)">Humidity (%)</label>
+                    <input type="number" name="Humidity_perc" placeholder="e.g. 65" style="background:rgba(255,255,255,0.07);border-color:rgba(255,255,255,0.12);color:#F5EDD8">
+                </div>
+                <div class="form-group">
+                    <label style="color:rgba(245,237,216,0.6)">Soil pH</label>
+                    <input type="number" name="ph" step="0.1" placeholder="e.g. 6.5" style="background:rgba(255,255,255,0.07);border-color:rgba(255,255,255,0.12);color:#F5EDD8">
+                </div>
+            </div>
+            
+            <h4 style="font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--wheat);margin:28px 0 16px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,0.08)">
+                🪨 Soil Properties
+            </h4>
+            <div class="form-grid" style="grid-template-columns:repeat(3,1fr)">
+                <div class="form-group">
+                    <label style="color:rgba(245,237,216,0.6)">Organic Carbon (g/kg)</label>
+                    <input type="number" name="organic_carbon_g_kg" step="0.1" placeholder="e.g. 25" style="background:rgba(255,255,255,0.07);border-color:rgba(255,255,255,0.12);color:#F5EDD8">
+                </div>
+                <div class="form-group">
+                    <label style="color:rgba(245,237,216,0.6)">Clay (g/kg)</label>
+                    <input type="number" name="clay_g_kg" placeholder="e.g. 250" style="background:rgba(255,255,255,0.07);border-color:rgba(255,255,255,0.12);color:#F5EDD8">
+                </div>
+                <div class="form-group">
+                    <label style="color:rgba(245,237,216,0.6)">Sand (g/kg)</label>
+                    <input type="number" name="sand_g_kg" placeholder="e.g. 400" style="background:rgba(255,255,255,0.07);border-color:rgba(255,255,255,0.12);color:#F5EDD8">
+                </div>
+            </div>
+            
+            <div class="btn-row">
+                <button type="submit" class="btn" style="background:linear-gradient(135deg,var(--wheat),#b8892d);color:var(--soil)">Run Full Analysis</button>
+                <a href="{{ url_for('web_yield', mode='expert') }}" class="btn" style="background:rgba(255,255,255,0.08);color:rgba(245,237,216,0.7);border:1.5px solid rgba(255,255,255,0.12)">Reset</a>
+            </div>
+        </form>
+    </div>
+    {% endif %}
+    
+    <!-- ═══════════ RESULT ═══════════ -->
+    {% if result %}
+    <div class="result-card" id="resultCard" {% if mode == 'expert' %}style="background:linear-gradient(135deg,#1a3a20,#2C1A0E);border-color:rgba(212,168,83,0.2);color:#F5EDD8"{% endif %}>
+        <h3 {% if mode == 'expert' %}style="color:rgba(245,237,216,0.5)"{% else %}style="color:var(--muted)"{% endif %}>
+            Predicted Yield
+        </h3>
+        <div class="result-value" {% if mode == 'expert' %}style="color:var(--wheat)"{% endif %}>
+            {{ result.yield }} <span style="font-size:1rem;font-weight:400">t / ha</span>
+        </div>
+        
+        <div class="result-meta">
+            <div>
+                <div class="meta-label" {% if mode == 'expert' %}style="color:rgba(245,237,216,0.4)"{% endif %}>Likely Range</div>
+                <div class="meta-value" {% if mode == 'expert' %}style="color:#F5EDD8"{% endif %}>{{ result.low }} – {{ result.high }} t/ha</div>
+            </div>
+            {% if result.total_prod %}
+            <div>
+                <div class="meta-label" {% if mode == 'expert' %}style="color:rgba(245,237,216,0.4)"{% endif %}>Total Harvest</div>
+                <div class="meta-value" {% if mode == 'expert' %}style="color:#F5EDD8"{% endif %}>{{ result.total_prod }} tons</div>
+            </div>
+            {% endif %}
+            <div>
+                <div class="meta-label" {% if mode == 'expert' %}style="color:rgba(245,237,216,0.4)"{% endif %}>Crop</div>
+                <div class="meta-value" {% if mode == 'expert' %}style="color:#F5EDD8"{% endif %}>{{ result.crop|title }}</div>
+            </div>
+            <div>
+                <div class="meta-label" {% if mode == 'expert' %}style="color:rgba(245,237,216,0.4)"{% endif %}>Season</div>
+                <div class="meta-value" {% if mode == 'expert' %}style="color:#F5EDD8"{% endif %}>{{ result.season|title }}</div>
+            </div>
+        </div>
+        
+        {% if mode == 'expert' %}
+        <div style="margin-top:20px;padding-top:20px;border-top:1px solid rgba(255,255,255,0.08)">
+            <div style="font-size:0.72rem;color:rgba(245,237,216,0.4)">
+                Avg. Prediction Error: ±1.30 t/ha MAE on 2016–2020 test data
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    <script>
+    window.addEventListener('load', function() {
+        setTimeout(function() {
+            var resultCard = document.getElementById('resultCard');
+            if (resultCard) {
+                resultCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }, 200);
+    });
+    </script>
+    {% endif %}
+</div>
+{% endblock %}
