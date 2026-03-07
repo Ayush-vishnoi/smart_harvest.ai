@@ -452,8 +452,9 @@ def location_data():
 
 # ─── Entry Point ──────────────────────────────────────────────────────────────
 if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5001))
     log.info("🌾 Starting Smart Harvest AI")
-    log.info("   API (JSON): http://localhost:5001/api/health")
-    log.info("   Web (HTML): http://localhost:5001/web")
+    log.info(f"   API (JSON): http://0.0.0.0:{port}/api/health")
+    log.info(f"   Web (HTML): http://0.0.0.0:{port}/web")
     log.info("   Frontend logic separated into: backend/frontend.py")
-    app.run(host="0.0.0.0", port=5001, debug=False)
+    app.run(host="0.0.0.0", port=port, debug=False)

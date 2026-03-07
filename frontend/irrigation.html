@@ -98,17 +98,27 @@
                 const btn = this;
                 const status = document.getElementById('locationStatusIrr');
                 
-                btn.disabled = true;
-                btn.textContent = '🔄 Getting location...';
-                status.textContent = 'Requesting GPS access...';
-                status.style.color = '#D4A853';
-                
                 if (!navigator.geolocation) {
                     status.textContent = '❌ Geolocation not supported';
                     status.style.color = '#C84B31';
-                    btn.disabled = false;
-                    btn.textContent = '📍 Use My Current Location';
                     return;
+                }
+                
+                btn.disabled = true;
+                btn.textContent = '🔄 Getting location...';
+                status.textContent = '📍 Requesting location permission...';
+                status.style.color = '#D4A853';
+                
+                if (navigator.permissions) {
+                    navigator.permissions.query({name: 'geolocation'}).then(function(result) {
+                        if (result.state === 'denied') {
+                            status.textContent = '❌ Location blocked. Click the 🔒 icon in address bar and allow location.';
+                            status.style.color = '#C84B31';
+                            btn.disabled = false;
+                            btn.textContent = '📍 Use My Current Location';
+                            return;
+                        }
+                    });
                 }
                 
                 navigator.geolocation.getCurrentPosition(
@@ -136,7 +146,6 @@
                                     document.getElementById('irr_clay_g_kg').value = data.clay || 250;
                                     document.getElementById('irr_sand_g_kg').value = data.sand || 400;
                                     
-                                    // Auto-fill state dropdown
                                     if (data.state) {
                                         const stateSelect = document.querySelector('select[name="state"]');
                                         const stateValue = data.state.toLowerCase();
@@ -148,7 +157,7 @@
                                         }
                                     }
                                     
-                                    status.textContent = `✅ Climate data loaded for ${data.state ? data.state.toUpperCase() : data.region || 'your area'}`;
+                                    status.textContent = `✅ Climate data loaded for ${data.state ? data.state.toUpperCase() : data.region}`;
                                 }
                             })
                             .catch(() => {
@@ -158,12 +167,22 @@
                         setTimeout(() => { btn.disabled = false; }, 2000);
                     },
                     function(error) {
-                        status.textContent = '❌ Unable to get location. Please enable permissions.';
+                        let msg = '❌ ';
+                        if (error.code === 1) {
+                            msg = 'Location blocked. Click 🔒 in address bar to allow location.';
+                        } else if (error.code === 2) {
+                            msg = 'Location unavailable. Check GPS settings.';
+                        } else if (error.code === 3) {
+                            msg = 'Request timed out. Try again.';
+                        } else {
+                            msg = 'Unable to get location.';
+                        }
+                        status.textContent = msg;
                         status.style.color = '#C84B31';
                         btn.disabled = false;
                         btn.textContent = '📍 Use My Current Location';
                     },
-                    { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+                    { enableHighAccuracy: false, timeout: 15000, maximumAge: 0 }
                 );
             });
             </script>

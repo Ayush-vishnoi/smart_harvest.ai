@@ -105,17 +105,28 @@
                 const btn = this;
                 const status = document.getElementById('locationStatus');
                 
-                btn.disabled = true;
-                btn.textContent = '🔄 Getting location...';
-                status.textContent = 'Requesting GPS access...';
-                status.style.color = '#D4A853';
-                
                 if (!navigator.geolocation) {
                     status.textContent = '❌ Geolocation not supported by your browser';
                     status.style.color = '#C84B31';
-                    btn.disabled = false;
-                    btn.textContent = '📍 Use My Current Location';
                     return;
+                }
+                
+                btn.disabled = true;
+                btn.textContent = '🔄 Getting location...';
+                status.innerHTML = '📍 Requesting location permission...';
+                status.style.color = '#D4A853';
+                
+                // Check permission state first
+                if (navigator.permissions) {
+                    navigator.permissions.query({name: 'geolocation'}).then(function(result) {
+                        if (result.state === 'denied') {
+                            status.innerHTML = '❌ Location blocked. <br><small>Click the 🔒 icon in address bar and allow location access.</small>';
+                            status.style.color = '#C84B31';
+                            btn.disabled = false;
+                            btn.textContent = '📍 Use My Current Location';
+                            return;
+                        }
+                    });
                 }
                 
                 navigator.geolocation.getCurrentPosition(
@@ -131,7 +142,6 @@
                         btn.textContent = '✓ Location Set';
                         btn.style.background = 'linear-gradient(135deg,#2C5F2D,#1a3a20)';
                         
-                        // Fetch climate data from API
                         fetch(`/api/location-data?lat=${lat}&lon=${lon}`)
                             .then(res => res.json())
                             .then(data => {
@@ -144,7 +154,6 @@
                                     document.getElementById('clay_g_kg').value = data.clay || 250;
                                     document.getElementById('sand_g_kg').value = data.sand || 400;
                                     
-                                    // Auto-fill state dropdown
                                     if (data.state) {
                                         const stateSelect = document.querySelector('select[name="state"]');
                                         const stateValue = data.state.toLowerCase();
@@ -160,32 +169,28 @@
                                 }
                             })
                             .catch(() => {
-                                status.textContent = `✅ Location set. Using regional averages for climate data.`;
+                                status.textContent = `✅ Location set. Using regional averages.`;
                             });
                         
                         setTimeout(() => { btn.disabled = false; }, 2000);
                     },
                     function(error) {
                         let msg = '❌ ';
-                        switch(error.code) {
-                            case error.PERMISSION_DENIED:
-                                msg += 'Location access denied. Please enable location permissions.';
-                                break;
-                            case error.POSITION_UNAVAILABLE:
-                                msg += 'Location unavailable. Please try again.';
-                                break;
-                            case error.TIMEOUT:
-                                msg += 'Location request timed out. Please try again.';
-                                break;
-                            default:
-                                msg += 'Unable to get location.';
+                        if (error.code === 1) {
+                            msg = '❌ Location blocked. Click the 🔒 icon in your browser address bar and allow location access, then try again.';
+                        } else if (error.code === 2) {
+                            msg = '❌ Location unavailable. Please check your device GPS settings.';
+                        } else if (error.code === 3) {
+                            msg = '❌ Request timed out. Please try again.';
+                        } else {
+                            msg = '❌ Unable to get location. Please enable location services.';
                         }
                         status.textContent = msg;
                         status.style.color = '#C84B31';
                         btn.disabled = false;
                         btn.textContent = '📍 Use My Current Location';
                     },
-                    { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+                    { enableHighAccuracy: false, timeout: 15000, maximumAge: 0 }
                 );
             });
             </script>
