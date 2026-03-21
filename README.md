@@ -124,9 +124,9 @@ Response:
 - **Algorithm**: Random Forest (200 trees) + Gradient Boosting (150 trees) Hybrid (0.6 RF + 0.4 GB)
 - **Features**: state, district, crop, year, season, area, lat/lon, rainfall, temperature, humidity, pH, organic carbon, clay, sand
 - **Target**: Yield (tons/hectare)
-- **R²**: 0.9716
+- **R²**: 0.7916
 
 ### Irrigation Model  
 - **Algorithm**: Random Forest Classifier (150 trees)
 - **Classes**: Low / Moderate / High / Very High
-- **Accuracy**: 99.97%
+- **Accuracy**: 95.97%
