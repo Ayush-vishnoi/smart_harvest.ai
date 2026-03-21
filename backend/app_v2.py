@@ -152,7 +152,7 @@ app = Flask(__name__,
     template_folder=str(BASE_DIR / 'frontend'),
     static_folder=str(BASE_DIR / 'static')
 )
-app.secret_key = 'smart_harvest_ai_secret_key_2024'  # For session management
+app.secret_key = os.environ.get('SECRET_KEY', 'smart_harvest_ai_secret_key_2024')
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 log = logging.getLogger(__name__)

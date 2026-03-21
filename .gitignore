@@ -48,3 +48,4 @@ logs/
 
 # Data (keep models but ignore large datasets)
 FINAL_DATASET_cleaned.csv
+PYTHONANYWHERE.md
