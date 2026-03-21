@@ -9,8 +9,8 @@ Trained on 235,000+ real records across 32 states, 55 crops, and 6 growing seaso
 
 | Model | Metric | Score |
 |-------|--------|-------|
-| Yield Prediction (RF + GB Hybrid) | R² | **97.2%** |
-| Irrigation Classifier (RF) | Accuracy | **99.97%** |
+| Yield Prediction (RF + GB Hybrid) | R² | **80.2%** |
+| Irrigation Classifier (Rule based) | Accuracy | **95.97%** |
 
 ---
 
