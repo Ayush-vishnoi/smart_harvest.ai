@@ -30,8 +30,8 @@ instance/
 # Environment
 .env
 .venv
-
-# IDE
+venv/
+ENV/
 .vscode/
 .idea/
 *.swp
