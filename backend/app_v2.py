@@ -225,10 +225,10 @@ except Exception as e:
 def safe_encode(le, value):
     val = str(value).strip().lower()
     if val in le.classes_:
-        return le.transform([val])[0]
+        return int(le.transform([val])[0])
     for cls in le.classes_:
         if val in cls or cls in val:
-            return le.transform([cls])[0]
+            return int(le.transform([cls])[0])
     return 0
 
 def irrigation_advice(label, rainfall, temp, humidity):

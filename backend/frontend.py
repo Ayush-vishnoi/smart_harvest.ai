@@ -42,11 +42,11 @@ class FrontendController:
         """Encode categorical value with fallback for unknown values"""
         val = str(value).strip().lower()
         if val in le.classes_:
-            return le.transform([val])[0]
+            return int(le.transform([val])[0])
         # Fuzzy match
         for cls in le.classes_:
             if val in cls or cls in val:
-                return le.transform([cls])[0]
+                return int(le.transform([cls])[0])
         return 0  # default fallback
     
     def get_irrigation_advice(self, need_level):
