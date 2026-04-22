@@ -6,6 +6,8 @@ All web page routes and form handling - completely separate from API
 
 from flask import render_template, request, redirect, url_for, session
 import pandas as pd
+import numpy as np
+import traceback as tb
 
 
 class FrontendController:
@@ -154,7 +156,7 @@ class FrontendController:
                 return redirect(url_for('web_yield', mode=mode))
                 
             except Exception as e:
-                error = f"Prediction failed: {str(e)}"
+                error = f"Prediction failed: {tb.format_exc()}"
                 session['yield_error'] = error
                 session['yield_form_data'] = dict(request.form)
                 return redirect(url_for('web_yield', mode=mode))
@@ -227,7 +229,7 @@ class FrontendController:
                 return redirect(url_for('web_irrigation', mode=mode))
                 
             except Exception as e:
-                error = f"Prediction failed: {str(e)}"
+                error = f"Prediction failed: {tb.format_exc()}"
                 session['irrigation_error'] = error
                 session['irrigation_form_data'] = dict(request.form)
                 return redirect(url_for('web_irrigation', mode=mode))
