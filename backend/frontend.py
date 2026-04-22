@@ -127,8 +127,9 @@ class FrontendController:
                     row["area"] = self.convert_acres_to_hectares(acres)
                 
                 # Make prediction
-                X = pd.DataFrame([row])[self.y_features]
-                X_scaled = self.y_scaler.transform(X)
+                feat_list = list(self.y_features)
+                X = pd.DataFrame([row])[feat_list]
+                X_scaled = self.y_scaler.transform(X.values)
 
                 rf_pred = float(self.rf_model.predict(X_scaled)[0])
                 gb_pred = float(self.gb_model.predict(X_scaled)[0])
@@ -208,8 +209,9 @@ class FrontendController:
                         row[feat] = float(request.form.get(feat, 0) or 0)
                 
                 # Make prediction
-                X = pd.DataFrame([row])[self.irr_features]
-                X_scaled = self.irr_scaler.transform(X)
+                feat_list = list(self.irr_features)
+                X = pd.DataFrame([row])[feat_list]
+                X_scaled = self.irr_scaler.transform(X.values)
                 
                 pred_idx = self.irr_clf.predict(X_scaled)[0]
                 pred_label = self.irr_target_le.inverse_transform([pred_idx])[0]
