@@ -128,8 +128,8 @@ class FrontendController:
                 
                 # Make prediction
                 feat_list = list(self.y_features)
-                X = pd.DataFrame([row])[feat_list]
-                X_scaled = self.y_scaler.transform(X.values)
+                X = pd.DataFrame([row], columns=feat_list)
+                X_scaled = self.y_scaler.transform(X)
 
                 rf_pred = float(self.rf_model.predict(X_scaled)[0])
                 gb_pred = float(self.gb_model.predict(X_scaled)[0])
@@ -210,8 +210,8 @@ class FrontendController:
                 
                 # Make prediction
                 feat_list = list(self.irr_features)
-                X = pd.DataFrame([row])[feat_list]
-                X_scaled = self.irr_scaler.transform(X.values)
+                X = pd.DataFrame([row], columns=feat_list)
+                X_scaled = self.irr_scaler.transform(X)
                 
                 pred_idx = self.irr_clf.predict(X_scaled)[0]
                 pred_label = self.irr_target_le.inverse_transform([pred_idx])[0]

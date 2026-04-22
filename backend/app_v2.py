@@ -295,8 +295,8 @@ def predict_yield():
             else:
                 row[feat] = float(data.get(feat, 0) or 0)
 
-        X = pd.DataFrame([row])[list(y_features)]
-        X_sc = y_scaler.transform(X.values)
+        X = pd.DataFrame([row], columns=list(y_features))
+        X_sc = y_scaler.transform(X)
 
         rf_pred = float(rf_model.predict(X_sc)[0])
         gb_pred = float(gb_model.predict(X_sc)[0])
@@ -335,8 +335,8 @@ def predict_irrigation():
             else:
                 row[feat] = float(data.get(feat, 0) or 0)
 
-        X = pd.DataFrame([row])[list(irr_features)]
-        X_sc = irr_scaler.transform(X.values)
+        X = pd.DataFrame([row], columns=list(irr_features))
+        X_sc = irr_scaler.transform(X)
 
         pred_idx   = irr_clf.predict(X_sc)[0]
         pred_label = irr_target_le.inverse_transform([pred_idx])[0]
