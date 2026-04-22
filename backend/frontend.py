@@ -126,7 +126,7 @@ class FrontendController:
                 # Make prediction
                 X = pd.DataFrame([row])[self.y_features]
                 X_scaled = self.y_scaler.transform(X)
-                
+
                 rf_pred = float(self.rf_model.predict(X_scaled)[0])
                 gb_pred = float(self.gb_model.predict(X_scaled)[0])
                 hybrid = 0.55 * rf_pred + 0.45 * gb_pred
