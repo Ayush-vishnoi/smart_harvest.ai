@@ -114,9 +114,10 @@ class FrontendController:
                 
                 # Build feature dictionary
                 row = {}
+                cat_feats = ['state', 'district', 'crop', 'season']
                 for feat in self.y_features:
-                    if feat in ["state", "district", "crop", "season"]:
-                        val = request.form.get(feat, "").strip().lower()
+                    if feat in cat_feats:
+                        val = request.form.get(feat, '').strip().lower()
                         row[feat] = self.safe_encode(self.y_le[feat], val)
                     else:
                         row[feat] = float(request.form.get(feat, 0) or 0)
@@ -156,7 +157,7 @@ class FrontendController:
                 return redirect(url_for('web_yield', mode=mode))
                 
             except Exception as e:
-                error = f"Prediction failed: {tb.format_exc()}"
+                error = f"Prediction failed: {str(e)}"
                 session['yield_error'] = error
                 session['yield_form_data'] = dict(request.form)
                 return redirect(url_for('web_yield', mode=mode))
@@ -197,10 +198,12 @@ class FrontendController:
                 
                 # Build feature dictionary
                 row = {}
+                cat_feats = list(self.irr_le.keys()) if isinstance(self.irr_le, dict) else ['crop', 'state', 'season']
                 for feat in self.irr_features:
-                    if feat in self.irr_le:
-                        val = request.form.get(feat, "").strip().lower()
-                        row[feat] = self.safe_encode(self.irr_le[feat], val)
+                    if feat in cat_feats:
+                        val = request.form.get(feat, '').strip().lower()
+                        le = self.irr_le[feat] if isinstance(self.irr_le, dict) else self.irr_le
+                        row[feat] = self.safe_encode(le, val)
                     else:
                         row[feat] = float(request.form.get(feat, 0) or 0)
                 
@@ -229,7 +232,7 @@ class FrontendController:
                 return redirect(url_for('web_irrigation', mode=mode))
                 
             except Exception as e:
-                error = f"Prediction failed: {tb.format_exc()}"
+                error = f"Prediction failed: {str(e)}"
                 session['irrigation_error'] = error
                 session['irrigation_form_data'] = dict(request.form)
                 return redirect(url_for('web_irrigation', mode=mode))

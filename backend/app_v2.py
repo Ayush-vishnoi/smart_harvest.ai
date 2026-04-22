@@ -288,8 +288,9 @@ def predict_yield():
     try:
         data = request.get_json(force=True)
         row = {}
+        cat_feats = ['state', 'district', 'crop', 'season']
         for feat in y_features:
-            if feat in ["state", "district", "crop", "season"]:
+            if feat in cat_feats:
                 row[feat] = safe_encode(y_le[feat], data.get(feat, ""))
             else:
                 row[feat] = float(data.get(feat, 0) or 0)
@@ -326,9 +327,11 @@ def predict_irrigation():
     try:
         data = request.get_json(force=True)
         row = {}
+        cat_feats = list(irr_le.keys()) if isinstance(irr_le, dict) else ['crop', 'state', 'season']
         for feat in irr_features:
-            if feat in irr_le:
-                row[feat] = safe_encode(irr_le[feat], data.get(feat, ""))
+            if feat in cat_feats:
+                le = irr_le[feat] if isinstance(irr_le, dict) else irr_le
+                row[feat] = safe_encode(le, data.get(feat, ""))
             else:
                 row[feat] = float(data.get(feat, 0) or 0)
 
