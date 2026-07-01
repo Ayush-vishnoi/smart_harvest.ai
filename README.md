@@ -1,6 +1,6 @@
 # 🌾 Smart Harvest AI
 
-Link-https://ayushvishnoi.pythonanywhere.com
+Link-https://smart-harvest-ai.onrender.com
 
 AI-powered crop yield prediction and irrigation recommendation system for Indian agriculture.
 Trained on 235,000+ real records across 32 states, 55 crops, and 6 growing seasons.
