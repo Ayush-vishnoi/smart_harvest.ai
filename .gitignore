@@ -46,6 +46,23 @@ Thumbs.db
 *.log
 logs/
 
-# Data (keep models but ignore large datasets)
+# Jupyter
+.ipynb_checkpoints/
+
+# Local training data, caches, and generated outputs
 FINAL_DATASET_cleaned.csv
+PlantVillage/
+cache/
+outputs/
+*.keras
+*.h5
+
+# Local-only project files
+HTTP_request.png
+Mini_project.pptx
 PYTHONANYWHERE.md
+
+# Generated Python caches and test artifacts
+.pytest_cache/
+__pycache__/
+*.pyc

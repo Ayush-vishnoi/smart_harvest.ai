@@ -1,1 +1,1 @@
-web: gunicorn --chdir backend app_v2:app --bind 0.0.0.0:$PORT --timeout 120 --workers 1
+web: gunicorn --chdir backend app_v2:app --bind 0.0.0.0:$PORT --workers 1 --worker-class gthread --threads 2 --timeout 180 --graceful-timeout 30 --keep-alive 5 --max-requests 250 --max-requests-jitter 25 --access-logfile - --error-logfile -

@@ -1,0 +1,8 @@
+TOPIC: General Pest Management and Integrated Pest Management (IPM)
+CATEGORY: Pest Management
+
+CONTENT:
+Integrated Pest Management (IPM) is an approach combining multiple strategies - biological control (natural predators), cultural practices (crop rotation, resistant varieties, proper sanitation), physical/mechanical control (traps, barriers), and chemical control (used as a last resort, applied judiciously) - to manage pests sustainably rather than relying on any single method. Regular field scouting to detect pest problems early is a core practice, since early intervention is generally more effective and requires less intensive treatment than waiting until an infestation is severe. Beneficial insects (ladybugs, parasitic wasps, spiders) naturally help control many common pests and should be preserved where possible by minimizing broad-spectrum insecticide use.
+
+RELEVANCE TO YIELD PREDICTION:
+Unmanaged pest outbreaks can cause sudden, significant yield loss that is difficult to predict from weather/soil data alone, which is why some advanced yield models also incorporate pest incidence reports or remote sensing indicators of crop stress.

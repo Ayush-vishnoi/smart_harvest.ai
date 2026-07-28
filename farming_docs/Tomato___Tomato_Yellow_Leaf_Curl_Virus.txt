@@ -1,0 +1,19 @@
+CROP: Tomato
+DISEASE: Tomato Yellow Leaf Curl Virus (TYLCV)
+PATHOGEN/CAUSE: Begomovirus, transmitted by the whitefly (Bemisia tabaci)
+
+SYMPTOMS:
+Severe stunting, upward curling and yellowing of leaf edges, smaller leaves overall, and reduced flowering/fruit set. Plants infected early in growth often produce little to no fruit.
+
+FAVORABLE CONDITIONS FOR SPREAD:
+Warm climates with high whitefly populations. The virus itself doesn't spread directly between plants; it requires the whitefly vector to transmit it.
+
+ORGANIC / NON-CHEMICAL TREATMENT:
+There is no cure once a plant is infected — management focuses on controlling the whitefly vector. Use yellow sticky traps to monitor/reduce whitefly numbers. Reflective mulches can help repel whiteflies. Remove and destroy infected plants promptly to reduce virus source.
+
+CHEMICAL TREATMENT:
+Insecticides targeting whiteflies (the vector, not the virus directly) such as those recommended by local agricultural extension. Rotate insecticide classes to prevent whitefly resistance.
+(Note: Always confirm exact product names and dosages with a local agricultural extension officer or product label, as recommendations vary by region and formulation.)
+
+PREVENTION:
+Use virus-resistant tomato varieties where available. Control whitefly populations with sticky traps and insecticidal soap. Use insect-proof netting in nurseries/seedling stage. Remove and destroy infected plants immediately rather than letting them remain as a virus source for whiteflies.

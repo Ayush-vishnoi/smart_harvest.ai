@@ -1,0 +1,8 @@
+TOPIC: Weather and Climate Impact on Yield
+CATEGORY: Yield Prediction
+
+CONTENT:
+Temperature and rainfall during specific crop growth stages matter more than seasonal averages. For example, high temperatures during flowering can cause flower drop and reduced grain/fruit set in many crops, while adequate rainfall during vegetative growth supports strong plant establishment. Drought stress during grain filling (in cereals) or fruit development (in vegetables/fruits) is one of the most yield-damaging conditions, since the plant cannot properly fill or size the harvestable product even if earlier growth was healthy. Excess rainfall or waterlogging can cause root damage, nutrient leaching, and increased disease pressure (many fungal diseases thrive in wet conditions). Climate variability year to year is a major reason why yield prediction models benefit from historical multi-year weather data rather than a single season's data alone.
+
+RELEVANCE TO YIELD PREDICTION:
+This is one of the most heavily weighted categories in yield prediction models, since weather variability - not just averages - often explains the largest year-to-year swings in actual yield outcomes.

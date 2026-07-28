@@ -1,0 +1,19 @@
+CROP: Apple
+DISEASE: Cedar Apple Rust
+PATHOGEN/CAUSE: Gymnosporangium juniperi-virginianae (fungus, requires both apple and cedar/juniper hosts to complete its life cycle)
+
+SYMPTOMS:
+Bright yellow-orange spots on upper leaf surface that enlarge over the season; small black dots may appear within the spots. Underside develops tube-like structures releasing spores. Can also affect fruit with distorted, spotted lesions.
+
+FAVORABLE CONDITIONS FOR SPREAD:
+Wet spring weather when spores from nearby cedar/juniper trees are released and carried by wind to apple trees.
+
+ORGANIC / NON-CHEMICAL TREATMENT:
+Remove nearby cedar/juniper trees within a few hundred meters if practical, since they're required for the fungus's life cycle. Copper-based fungicide sprays from bud break through early summer.
+
+CHEMICAL TREATMENT:
+Fungicides containing myclobutanil applied preventively from pink bud stage through several weeks after petal fall, especially during wet spring weather. Confirm timing with local extension recommendations.
+(Note: Always confirm exact product names and dosages with a local agricultural extension officer or product label, as recommendations vary by region and formulation.)
+
+PREVENTION:
+Choose rust-resistant apple varieties. Avoid planting apple trees near cedar/juniper trees where possible. Monitor local weather for rust-favorable wet spring conditions and apply preventive sprays accordingly.

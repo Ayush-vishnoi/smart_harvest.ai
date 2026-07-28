@@ -1,0 +1,62 @@
+{
+  "soil_types_and_management": {
+    "title": "Soil Types and Management",
+    "category": "Soil",
+    "content": "Soil is the foundation of crop yield and is broadly classified into sandy, clay, silty, and loamy types. Sandy soil drains quickly but holds fewer nutrients, suiting crops like groundnut and watermelon. Clay soil retains water and nutrients well but drains slowly and can waterlog, suiting rice and wheat. Loamy soil, a balanced mix of sand, silt, and clay, is considered ideal for most crops due to good drainage and nutrient retention. Soil management practices include regular testing of pH and nutrient levels (N-P-K), adding organic matter (compost, farmyard manure) to improve structure and fertility, and avoiding over-tillage which can degrade soil structure over time. Soil pH between 6.0 and 7.5 suits most crops; acidic soils can be corrected with lime, and alkaline soils with gypsum or organic matter.",
+    "relevance_to_yield": "Soil type and health directly affects nutrient and water availability to roots, which is one of the strongest predictors of yield. Poor soil structure or nutrient deficiency is a common cause of lower-than-expected yield even when other conditions (rainfall, temperature) are favorable."
+  },
+  "irrigation_methods": {
+    "title": "Irrigation Methods",
+    "category": "Water Management",
+    "content": "Common irrigation methods include flood/surface irrigation (simple, low-cost, but water-inefficient), sprinkler irrigation (more uniform coverage, moderate efficiency, suited to a wide range of crops), and drip irrigation (delivers water directly to the root zone, highest water-use efficiency, ideal for high-value crops like vegetables and fruit orchards). Choice of method depends on crop type, water availability, soil type, and budget. Over-irrigation can lead to waterlogging, root rot, and nutrient leaching, while under-irrigation causes water stress, reduced growth, and lower yield. Scheduling irrigation based on crop growth stage and soil moisture monitoring (rather than a fixed calendar) improves both water efficiency and yield outcomes.",
+    "relevance_to_yield": "Water stress during critical growth stages (flowering, grain fill) has one of the largest negative impacts on final yield. Yield prediction models often weight rainfall and irrigation data heavily because water availability during these sensitive windows matters more than total seasonal water."
+  },
+  "fertilizers_and_nutrients": {
+    "title": "Fertilizers and Plant Nutrients",
+    "category": "Nutrient Management",
+    "content": "Plants require macronutrients (Nitrogen, Phosphorus, Potassium - NPK) in the largest quantities, along with secondary nutrients (Calcium, Magnesium, Sulfur) and micronutrients (Zinc, Boron, Iron, Manganese) in smaller amounts. Nitrogen promotes leafy vegetative growth; Phosphorus supports root development and flowering; Potassium improves overall plant vigor, disease resistance, and fruit/grain quality. Fertilizer application should be based on soil test results rather than fixed amounts, since over-application wastes money, can harm soil health, and may cause nutrient runoff into water bodies. Organic options (compost, farmyard manure, green manure, vermicompost) improve soil structure and provide slow-release nutrients, while chemical fertilizers offer faster, more precise nutrient delivery. A balanced approach combining both is generally recommended for long-term soil health and consistent yield.",
+    "relevance_to_yield": "Nutrient deficiency, particularly nitrogen and phosphorus, is a very common limiting factor for yield. Yield prediction models often use soil nutrient data (where available) as a key input feature, since deficiency symptoms may not be visible until yield loss has already begun."
+  },
+  "crop_rotation_and_planning": {
+    "title": "Crop Rotation and Planning",
+    "category": "Crop Planning",
+    "content": "Crop rotation is the practice of growing different types of crops in the same area across seasons, rather than repeatedly planting the same crop. It helps break pest and disease cycles (many pathogens are crop-specific and cannot survive without their host), improves soil structure and fertility (e.g., rotating with legumes like beans or lentils adds nitrogen to the soil naturally), and reduces the risk of nutrient depletion that comes from continuous single-crop farming. A typical rotation might alternate a cereal crop (like wheat or corn, which are heavy nitrogen users) with a legume crop (which fixes nitrogen back into the soil), followed by a different family entirely to further break disease cycles.",
+    "relevance_to_yield": "Fields under poor rotation practices (same crop for many consecutive seasons) often show gradually declining yield due to soil nutrient depletion and pest/disease buildup, even without an obvious single cause. This is an important contextual factor in yield prediction beyond just weather and soil data."
+  },
+  "seed_selection_and_sowing": {
+    "title": "Seed Selection and Sowing Practices",
+    "category": "Crop Planning",
+    "content": "Using certified, high-quality seed suited to the local climate and soil conditions is one of the most impactful decisions a farmer makes, since seed quality affects germination rate, disease resistance, and yield potential from the start. Hybrid and improved varieties often offer higher yield potential and better disease resistance compared to traditional/local varieties, though local varieties may be better adapted to specific regional stresses (drought, salinity). Sowing at the correct time and depth for the local climate is critical - sowing too early or late can expose crops to unfavorable temperatures, pest pressure, or reduced growing season length. Proper plant spacing based on crop type ensures adequate access to sunlight, water, and nutrients without overcrowding.",
+    "relevance_to_yield": "Sowing date and seed variety are commonly used as direct input features in yield prediction models, since they significantly affect the crop's exposure to seasonal weather risk and its genetic yield ceiling."
+  },
+  "factors_affecting_crop_yield": {
+    "title": "Key Factors Affecting Crop Yield",
+    "category": "Yield Prediction",
+    "content": "Crop yield is influenced by a combination of factors: (1) Weather - rainfall amount and distribution, temperature during critical growth stages, and sunlight hours; (2) Soil - type, fertility, pH, and organic matter content; (3) Water management - irrigation availability and scheduling; (4) Crop management - seed variety, sowing date, plant spacing, and crop rotation history; (5) Pest and disease pressure - unmanaged outbreaks can significantly reduce yield even under otherwise favorable conditions; (6) Inputs - fertilizer and nutrient management. No single factor determines yield in isolation; rather, yield is the outcome of how well all these factors align during the crop's specific growth stages, especially flowering and grain/fruit filling, which are the most sensitive periods to stress.",
+    "relevance_to_yield": "This is the core conceptual framework for yield prediction - models typically combine historical weather data, soil data, and crop management practices as input features to estimate expected yield, and understanding which factor is limiting yield in a specific case helps interpret why a prediction is higher or lower than expected."
+  },
+  "weather_impact_on_yield": {
+    "title": "Weather and Climate Impact on Yield",
+    "category": "Yield Prediction",
+    "content": "Temperature and rainfall during specific crop growth stages matter more than seasonal averages. For example, high temperatures during flowering can cause flower drop and reduced grain/fruit set in many crops, while adequate rainfall during vegetative growth supports strong plant establishment. Drought stress during grain filling (in cereals) or fruit development (in vegetables/fruits) is one of the most yield-damaging conditions, since the plant cannot properly fill or size the harvestable product even if earlier growth was healthy. Excess rainfall or waterlogging can cause root damage, nutrient leaching, and increased disease pressure (many fungal diseases thrive in wet conditions). Climate variability year to year is a major reason why yield prediction models benefit from historical multi-year weather data rather than a single season's data alone.",
+    "relevance_to_yield": "This is one of the most heavily weighted categories in yield prediction models, since weather variability - not just averages - often explains the largest year-to-year swings in actual yield outcomes."
+  },
+  "pest_and_general_ipm": {
+    "title": "General Pest Management and Integrated Pest Management (IPM)",
+    "category": "Pest Management",
+    "content": "Integrated Pest Management (IPM) is an approach combining multiple strategies - biological control (natural predators), cultural practices (crop rotation, resistant varieties, proper sanitation), physical/mechanical control (traps, barriers), and chemical control (used as a last resort, applied judiciously) - to manage pests sustainably rather than relying on any single method. Regular field scouting to detect pest problems early is a core practice, since early intervention is generally more effective and requires less intensive treatment than waiting until an infestation is severe. Beneficial insects (ladybugs, parasitic wasps, spiders) naturally help control many common pests and should be preserved where possible by minimizing broad-spectrum insecticide use.",
+    "relevance_to_yield": "Unmanaged pest outbreaks can cause sudden, significant yield loss that is difficult to predict from weather/soil data alone, which is why some advanced yield models also incorporate pest incidence reports or remote sensing indicators of crop stress."
+  },
+  "post_harvest_handling": {
+    "title": "Post-Harvest Handling and Storage",
+    "category": "Post-Harvest",
+    "content": "Proper post-harvest handling significantly affects the final usable yield, even after a crop has grown successfully in the field. Key practices include harvesting at the correct maturity stage (too early reduces quality/yield, too late can lead to losses from shattering, pest damage, or spoilage), proper drying to safe moisture levels before storage (to prevent mold and pest infestation), and appropriate storage conditions (cool, dry, pest-proof) to minimize post-harvest losses, which in many regions account for a significant percentage of total production lost between harvest and consumption/sale.",
+    "relevance_to_yield": "While yield prediction models typically estimate field yield (what's produced), it's worth noting for farmer-facing tools that the actual usable/marketable yield can be meaningfully lower after post-harvest losses, so recommendations on handling and storage add practical value alongside the prediction itself."
+  },
+  "organic_vs_conventional_farming": {
+    "title": "Organic vs Conventional Farming Approaches",
+    "category": "Farming Systems",
+    "content": "Conventional farming typically uses synthetic fertilizers and pesticides to maximize yield and manage pests/diseases quickly, often achieving higher short-term yields. Organic farming avoids synthetic inputs, relying instead on compost, crop rotation, biological pest control, and natural soil-building practices; it often has somewhat lower yields initially but can improve long-term soil health and reduce input costs and environmental impact over time. Many farmers use an integrated approach, applying organic practices as the foundation (soil health, rotation, biological control) while using targeted chemical inputs only when necessary, balancing yield, cost, and sustainability.",
+    "relevance_to_yield": "Farming system type is a relevant contextual factor in yield prediction, since organic and conventional fields under otherwise similar conditions can show meaningfully different yield potential and variability."
+  }
+}

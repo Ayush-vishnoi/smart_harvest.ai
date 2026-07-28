@@ -1,0 +1,8 @@
+TOPIC: Post-Harvest Handling and Storage
+CATEGORY: Post-Harvest
+
+CONTENT:
+Proper post-harvest handling significantly affects the final usable yield, even after a crop has grown successfully in the field. Key practices include harvesting at the correct maturity stage (too early reduces quality/yield, too late can lead to losses from shattering, pest damage, or spoilage), proper drying to safe moisture levels before storage (to prevent mold and pest infestation), and appropriate storage conditions (cool, dry, pest-proof) to minimize post-harvest losses, which in many regions account for a significant percentage of total production lost between harvest and consumption/sale.
+
+RELEVANCE TO YIELD PREDICTION:
+While yield prediction models typically estimate field yield (what's produced), it's worth noting for farmer-facing tools that the actual usable/marketable yield can be meaningfully lower after post-harvest losses, so recommendations on handling and storage add practical value alongside the prediction itself.

@@ -1,0 +1,8 @@
+TOPIC: Key Factors Affecting Crop Yield
+CATEGORY: Yield Prediction
+
+CONTENT:
+Crop yield is influenced by a combination of factors: (1) Weather - rainfall amount and distribution, temperature during critical growth stages, and sunlight hours; (2) Soil - type, fertility, pH, and organic matter content; (3) Water management - irrigation availability and scheduling; (4) Crop management - seed variety, sowing date, plant spacing, and crop rotation history; (5) Pest and disease pressure - unmanaged outbreaks can significantly reduce yield even under otherwise favorable conditions; (6) Inputs - fertilizer and nutrient management. No single factor determines yield in isolation; rather, yield is the outcome of how well all these factors align during the crop's specific growth stages, especially flowering and grain/fruit filling, which are the most sensitive periods to stress.
+
+RELEVANCE TO YIELD PREDICTION:
+This is the core conceptual framework for yield prediction - models typically combine historical weather data, soil data, and crop management practices as input features to estimate expected yield, and understanding which factor is limiting yield in a specific case helps interpret why a prediction is higher or lower than expected.

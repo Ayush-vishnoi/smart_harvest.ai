@@ -1,0 +1,19 @@
+CROP: Grape
+DISEASE: Black Rot
+PATHOGEN/CAUSE: Guignardia bidwellii (fungus)
+
+SYMPTOMS:
+Small brown circular spots on leaves with dark margins, developing tiny black dots in the center. Fruit develops a light brown spot that quickly spreads and shrivels the entire berry into a hard, black "mummy."
+
+FAVORABLE CONDITIONS FOR SPREAD:
+Warm, humid, wet weather, especially during and after bloom. The fungus overwinters in mummified fruit and infected canes.
+
+ORGANIC / NON-CHEMICAL TREATMENT:
+Remove and destroy mummified fruit and infected canes during dormant pruning. Copper-based fungicide sprays from early shoot growth through fruit set.
+
+CHEMICAL TREATMENT:
+Fungicides such as mancozeb or myclobutanil, applied on a protective schedule from early season through fruit ripening, especially during wet periods. Confirm timing with local viticulture extension guidance.
+(Note: Always confirm exact product names and dosages with a local agricultural extension officer or product label, as recommendations vary by region and formulation.)
+
+PREVENTION:
+Prune out and remove all mummified berries and infected wood during the dormant season. Improve canopy airflow through proper pruning and training. Avoid working with wet vines.

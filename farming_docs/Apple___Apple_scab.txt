@@ -1,0 +1,19 @@
+CROP: Apple
+DISEASE: Apple Scab
+PATHOGEN/CAUSE: Venturia inaequalis (fungus)
+
+SYMPTOMS:
+Olive-green to brown velvety spots on leaves and fruit, which later become darker and scab-like with a corky texture. Severely affected leaves may yellow and drop; fruit can become cracked and distorted.
+
+FAVORABLE CONDITIONS FOR SPREAD:
+Cool, wet spring weather during bud break and early leaf growth. Spores overwinter in fallen leaves and are released during rain in spring.
+
+ORGANIC / NON-CHEMICAL TREATMENT:
+Rake and destroy fallen leaves in autumn to reduce overwintering spores. Sulfur-based or copper-based fungicide sprays applied from bud break through early summer.
+
+CHEMICAL TREATMENT:
+Fungicides containing myclobutanil or captan, applied on a protective schedule from green tip stage through early summer, especially during wet periods. Confirm timing and rates with local orchard extension guidance.
+(Note: Always confirm exact product names and dosages with a local agricultural extension officer or product label, as recommendations vary by region and formulation.)
+
+PREVENTION:
+Choose scab-resistant apple varieties for new plantings. Prune trees for good air circulation and sun penetration. Clean up fallen leaves each autumn. Avoid overhead irrigation that prolongs leaf wetness.

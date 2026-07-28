@@ -1,0 +1,19 @@
+CROP: Grape
+DISEASE: Esca (Black Measles)
+PATHOGEN/CAUSE: A complex of fungi including Phaeomoniella chlamydospora and Phaeoacremonium species
+
+SYMPTOMS:
+Tiger-stripe pattern of yellow/red discoloration between leaf veins, small dark spots on berries ("measles"), and in severe cases, sudden wilting and death of shoots or the entire vine (apoplexy). Internal wood shows dark streaking when cut.
+
+FAVORABLE CONDITIONS FOR SPREAD:
+Chronic infection often linked to pruning wounds and stressed, older vines. Symptoms can appear intermittently, often worsening in hot, dry years.
+
+ORGANIC / NON-CHEMICAL TREATMENT:
+No effective curative treatment exists once a vine is infected internally. Prune out and destroy severely affected wood/vines. Protect pruning wounds to prevent new infections.
+
+CHEMICAL TREATMENT:
+No reliable chemical cure exists for the internal fungal complex. Management is preventive and focused on wound protection and vine health rather than treating established infections.
+(Note: Always confirm exact product names and dosages with a local agricultural extension officer or product label, as recommendations vary by region and formulation.)
+
+PREVENTION:
+Prune during dry weather and protect fresh pruning wounds with a wound sealant/protectant. Avoid unnecessary vine stress. Remove and destroy severely symptomatic vines to reduce inoculum. Use certified disease-free planting material for new vineyards.

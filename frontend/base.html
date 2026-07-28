@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Smart Harvest AI{% endblock %}</title>
+    <link rel="icon" href="{{ url_for('static', filename='favicon.svg') }}" type="image/svg+xml">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -240,6 +241,7 @@
             .result-meta { grid-template-columns: 1fr 1fr; }
         }
     </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/chatbot-widget.css') }}">
 </head>
 <body>
     <nav>
@@ -249,11 +251,12 @@
         <ul class="nav-links">
             <li><a href="{{ url_for('home') }}" {% if request.endpoint == 'home' %}class="active"{% endif %}>Home</a></li>
             <li><a href="{{ url_for('yield_predict') }}" {% if request.endpoint == 'yield_predict' %}class="active"{% endif %}>Yield</a></li>
-            <li><a href="{{ url_for('irrigation_predict') }}" {% if request.endpoint == 'irrigation_predict' %}class="active"{% endif %}>Irrigation</a></li>
+            <li><a href="{{ url_for('web_disease') }}" {% if request.endpoint == 'web_disease' %}class="active"{% endif %}>Disease</a></li>
             <li><a href="{{ url_for('dashboard') }}" {% if request.endpoint == 'dashboard' %}class="active"{% endif %}>Dashboard</a></li>
         </ul>
     </nav>
 
     {% block content %}{% endblock %}
+    <script src="{{ url_for('static', filename='js/chatbot-widget.js') }}" defer></script>
 </body>
 </html>

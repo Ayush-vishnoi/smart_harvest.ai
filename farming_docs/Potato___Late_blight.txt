@@ -1,0 +1,19 @@
+CROP: Potato
+DISEASE: Late Blight
+PATHOGEN/CAUSE: Phytophthora infestans (oomycete)
+
+SYMPTOMS:
+Water-soaked, dark lesions on leaves that expand rapidly, often with a pale border and white fungal growth on the underside in humid conditions. Tubers develop reddish-brown granular rot. This is the disease responsible for the historic Irish Potato Famine and can destroy a crop within days.
+
+FAVORABLE CONDITIONS FOR SPREAD:
+Cool, moist weather (15-20°C) with high humidity or rain. Spreads very rapidly via wind and rain splash.
+
+ORGANIC / NON-CHEMICAL TREATMENT:
+Copper-based fungicides applied preventively before disease-favorable weather arrives. Destroy infected plants and volunteer potatoes; do not compost infected material.
+
+CHEMICAL TREATMENT:
+Fungicides such as chlorothalonil, mancozeb, or systemic products for severe outbreaks. Given how fast this disease spreads, timely and thorough application matters greatly — consult local extension services for region-specific product recommendations.
+(Note: Always confirm exact product names and dosages with a local agricultural extension officer or product label, as recommendations vary by region and formulation.)
+
+PREVENTION:
+Plant certified disease-free seed potatoes and resistant varieties where available. Hill soil over developing tubers to reduce spore contact. Avoid overhead irrigation. Monitor weather forecasts for late blight risk periods and act preventively.

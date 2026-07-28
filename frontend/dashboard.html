@@ -1,48 +1,101 @@
 {% extends "base.html" %}
-{% block title %}Dashboard - Smart Harvest AI{% endblock %}
+{% block title %}Analytics Dashboard - Smart Harvest AI{% endblock %}
 {% block content %}
+<style>
+    .analytics-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:16px; margin-bottom:24px; }
+    .analytics-card, .chart-card, .health-card { background:#fff; border:1px solid rgba(92,61,30,.10); border-radius:18px; box-shadow:0 8px 40px rgba(44,26,14,.08); }
+    .analytics-card { padding:20px; }
+    .metric-label { color:var(--muted); font-size:.75rem; text-transform:uppercase; letter-spacing:.08em; font-weight:700; }
+    .metric-value { color:var(--soil); font:700 1.65rem 'DM Mono',monospace; margin-top:10px; }
+    .metric-note { color:var(--muted); font-size:.78rem; margin-top:5px; }
+    .dashboard-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:20px; margin-bottom:24px; }
+    .chart-card { padding:22px; min-width:0; }
+    .chart-card.wide { grid-column:1/-1; }
+    .chart-heading { display:flex; justify-content:space-between; align-items:flex-start; gap:12px; margin-bottom:16px; }
+    .chart-heading h2 { color:var(--soil); font-size:1.05rem; margin:0; }
+    .chart-heading p { color:var(--muted); font-size:.78rem; margin:5px 0 0; }
+    .chart-wrap { height:280px; position:relative; }
+    canvas { width:100%; height:100%; display:block; }
+    .health-card { padding:24px; margin-bottom:30px; }
+    .health-top { display:flex; justify-content:space-between; align-items:center; gap:16px; margin-bottom:20px; }
+    .health-top h2 { color:var(--soil); font-size:1.15rem; margin:0; }
+    .status-pill { border-radius:999px; padding:7px 13px; font-size:.75rem; font-weight:800; color:var(--leaf); background:rgba(61,122,69,.12); }
+    .health-list { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
+    .health-item { padding:15px; border-radius:12px; background:rgba(245,237,216,.55); }
+    .health-item strong { display:block; color:var(--soil); font-size:.85rem; margin-bottom:6px; }
+    .health-item span { color:var(--muted); font-size:.78rem; line-height:1.45; }
+    .legend { color:var(--muted); font-size:.75rem; white-space:nowrap; }
+    @media (max-width:900px) { .analytics-grid { grid-template-columns:repeat(2,1fr); } .health-list { grid-template-columns:repeat(2,1fr); } }
+    @media (max-width:640px) { .analytics-grid,.dashboard-grid { grid-template-columns:1fr; } .chart-card.wide { grid-column:auto; } .health-list { grid-template-columns:1fr; } .health-top { align-items:flex-start; flex-direction:column; } .chart-wrap { height:240px; } }
+</style>
+
 <div class="container">
     <div class="page-header">
-        <div class="page-label">📊 Overview</div>
-        <h1 class="page-title">System Dashboard</h1>
-        <p class="page-sub">Model performance and recent activity.</p>
+        <div class="page-label">📊 Model intelligence</div>
+        <h1 class="page-title">Analytics Dashboard</h1>
+        <p class="page-sub">A live view of dataset coverage, yield trends, and production model health.</p>
     </div>
-    
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-bottom:40px">
-        <div style="background:white;border:1px solid rgba(92,61,30,0.10);border-radius:18px;padding:24px;box-shadow:0 8px 40px rgba(44,26,14,0.10)">
-            <div style="font-size:1.4rem;margin-bottom:10px">🌿</div>
-            <div style="font-family:'DM Mono',monospace;font-size:1.8rem;color:var(--soil)">{{ "%.1f"|format(stats.test_r2) }}%</div>
-            <div style="font-size:0.8rem;color:var(--muted);margin-top:4px">Test R²</div>
-        </div>
-        <div style="background:white;border:1px solid rgba(92,61,30,0.10);border-radius:18px;padding:24px;box-shadow:0 8px 40px rgba(44,26,14,0.10)">
-            <div style="font-size:1.4rem;margin-bottom:10px">📏</div>
-            <div style="font-family:'DM Mono',monospace;font-size:1.8rem;color:var(--soil)">{{ "%.2f"|format(stats.mae) }}</div>
-            <div style="font-size:0.8rem;color:var(--muted);margin-top:4px">MAE (t/ha)</div>
-        </div>
-        <div style="background:white;border:1px solid rgba(92,61,30,0.10);border-radius:18px;padding:24px;box-shadow:0 8px 40px rgba(44,26,14,0.10)">
-            <div style="font-size:1.4rem;margin-bottom:10px">🗂️</div>
-            <div style="font-family:'DM Mono',monospace;font-size:1.8rem;color:var(--soil)">{{ stats.records }}</div>
-            <div style="font-size:0.8rem;color:var(--muted);margin-top:4px">Training Rows</div>
-        </div>
-        <div style="background:white;border:1px solid rgba(92,61,30,0.10);border-radius:18px;padding:24px;box-shadow:0 8px 40px rgba(44,26,14,0.10)">
-            <div style="font-size:1.4rem;margin-bottom:10px">🌾</div>
-            <div style="font-family:'DM Mono',monospace;font-size:1.8rem;color:var(--soil)">{{ stats.crops }}</div>
-            <div style="font-size:0.8rem;color:var(--muted);margin-top:4px">Crops Supported</div>
-        </div>
+
+    <section class="analytics-grid" aria-label="Dataset coverage summary">
+        <div class="analytics-card"><div class="metric-label">Dataset records</div><div class="metric-value">{{ "{:,.0f}".format(analytics.summary.records) }}</div><div class="metric-note">Rows available for analysis</div></div>
+        <div class="analytics-card"><div class="metric-label">Crops covered</div><div class="metric-value">{{ analytics.summary.crops }}</div><div class="metric-note">Distinct crop categories</div></div>
+        <div class="analytics-card"><div class="metric-label">Regions covered</div><div class="metric-value">{{ analytics.summary.regions }}</div><div class="metric-note">States and territories</div></div>
+        <div class="analytics-card"><div class="metric-label">Seasons</div><div class="metric-value">{{ analytics.summary.seasons }}</div><div class="metric-note">Agricultural seasons</div></div>
+        <div class="analytics-card"><div class="metric-label">Coverage window</div><div class="metric-value">{{ analytics.summary.year_start }}–{{ analytics.summary.year_end }}</div><div class="metric-note">Historical crop years</div></div>
+        <div class="analytics-card"><div class="metric-label">Mean yield</div><div class="metric-value">{{ "%.2f"|format(analytics.summary.mean_yield) }}</div><div class="metric-note">Dataset average t/ha</div></div>
+        <div class="analytics-card"><div class="metric-label">Median rainfall</div><div class="metric-value">{{ "%.1f"|format(analytics.summary.median_rainfall) }}</div><div class="metric-note">Annual rainfall mm</div></div>
+        <div class="analytics-card"><div class="metric-label">Test R²</div><div class="metric-value">{{ "%.2f"|format(analytics.model.test_r2) }}%</div><div class="metric-note">Time-based holdout</div></div>
+    </section>
+
+    <div class="dashboard-grid">
+        <section class="chart-card wide">
+            <div class="chart-heading"><div><h2>Annual yield and rainfall trends</h2><p>Average yield and rainfall across the historical dataset</p></div><span class="legend">Yield · Rainfall</span></div>
+            <div class="chart-wrap"><canvas id="trendChart" aria-label="Annual yield and rainfall trend chart"></canvas></div>
+        </section>
+        <section class="chart-card">
+            <div class="chart-heading"><div><h2>Model performance</h2><p>Generalization across train and test periods</p></div></div>
+            <div class="chart-wrap"><canvas id="modelChart" aria-label="Model performance chart"></canvas></div>
+        </section>
+        <section class="chart-card">
+            <div class="chart-heading"><div><h2>Top crop yields</h2><p>Highest average yield among well-represented crops</p></div></div>
+            <div class="chart-wrap"><canvas id="cropYieldChart" aria-label="Top crop yields chart"></canvas></div>
+        </section>
+        <section class="chart-card">
+            <div class="chart-heading"><div><h2>Crop distribution</h2><p>Most frequent crop records</p></div></div>
+            <div class="chart-wrap"><canvas id="cropChart" aria-label="Crop distribution chart"></canvas></div>
+        </section>
+        <section class="chart-card">
+            <div class="chart-heading"><div><h2>Region distribution</h2><p>Most represented states and regions</p></div></div>
+            <div class="chart-wrap"><canvas id="stateChart" aria-label="State distribution chart"></canvas></div>
+        </section>
+        <section class="chart-card wide">
+            <div class="chart-heading"><div><h2>Season distribution</h2><p>Records by agricultural season</p></div></div>
+            <div class="chart-wrap"><canvas id="seasonChart" aria-label="Season distribution chart"></canvas></div>
+        </section>
     </div>
-    
-    <div class="form-card">
-        <h3 style="font-size:1.1rem;font-weight:700;margin-bottom:20px">Recent Predictions</h3>
-        {% for p in recent %}
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:rgba(245,237,216,0.5);border-radius:9px;margin-bottom:10px">
-            <div>
-                <div style="font-weight:600;font-size:0.9rem">{{ p.crop }}</div>
-                <div style="font-size:0.75rem;color:var(--muted)">{{ p.state|title }}</div>
-            </div>
-            <div style="font-family:'DM Mono',monospace;font-size:0.9rem;color:var(--leaf)">{{ p.yield }} t/ha</div>
-            <div style="font-size:0.7rem;font-weight:700;padding:3px 9px;border-radius:100px;background:rgba(243,156,18,0.12);color:#e67e22">{{ p.irrigation }}</div>
+
+    <section class="health-card" aria-label="Model health insights">
+        <div class="health-top"><div><h2>Model-health insights</h2><p class="metric-note">Production readiness checks from the trained yield pipeline.</p></div><span class="status-pill">{{ analytics.health.status }}</span></div>
+        <div class="health-list">
+            <div class="health-item"><strong>Generalization</strong><span>{{ analytics.health.generalization }} · Train/test gap {{ "%.2f"|format(analytics.model.gap) }} percentage points.</span></div>
+            <div class="health-item"><strong>Validation strategy</strong><span>{{ analytics.health.validation }} · Train {{ analytics.model.train_years }}, test {{ analytics.model.test_years }}.</span></div>
+            <div class="health-item"><strong>Leakage control</strong><span>{{ analytics.health.leakage_control }} from production inference features.</span></div>
+            <div class="health-item"><strong>Error profile</strong><span>MAE {{ "%.3f"|format(analytics.model.mae) }} t/ha · RMSE {{ "%.3f"|format(analytics.model.rmse) }} t/ha.</span></div>
         </div>
-        {% endfor %}
-    </div>
+    </section>
 </div>
+
+<script>
+(function () {
+    const analytics = {{ analytics|tojson }};
+    const colors = { soil: '#2C1A0E', leaf: '#3D7A45', sage: '#7A9E7E', wheat: '#D4A853', muted: '#8C7B60', grid: 'rgba(44,26,14,.10)' };
+    const font = '12px Arial, sans-serif';
+    function setup(id) { const canvas = document.getElementById(id); if (!canvas) return null; const box = canvas.parentElement; const ratio = window.devicePixelRatio || 1; canvas.width = box.clientWidth * ratio; canvas.height = box.clientHeight * ratio; const ctx = canvas.getContext('2d'); ctx.scale(ratio, ratio); return { ctx, width: box.clientWidth, height: box.clientHeight }; }
+    function labels(ctx, values, x, y, align) { ctx.fillStyle = colors.muted; ctx.font = font; ctx.textAlign = align || 'center'; values.forEach((v, i) => ctx.fillText(String(v), x(i), y(i))); }
+    function bars(id, items, horizontal, palette) { const plot = setup(id); if (!plot || !items.length) return; const {ctx,wid}= {ctx:plot.ctx,wid:plot.width}; const w=plot.width,h=plot.height,pad=horizontal?72:34; const max=Math.max(...items.map(x=>x.value),1); ctx.strokeStyle=colors.grid; ctx.fillStyle=colors.muted; ctx.font=font; ctx.textAlign='right'; for(let i=0;i<5;i++){const y=20+i*(h-45)/4;ctx.beginPath();ctx.moveTo(pad,y);ctx.lineTo(w-10,y);ctx.stroke();} items.forEach((item,i)=>{if(horizontal){const y=28+i*(h-42)/items.length, bh=Math.max(12,(h-58)/items.length-8), bw=(w-pad-20)*item.value/max;ctx.fillStyle=palette[i%palette.length];ctx.fillRect(pad,y,bw,bh);ctx.fillStyle=colors.soil;ctx.textAlign='right';ctx.fillText(item.label.length>16?item.label.slice(0,15)+'…':item.label,pad-8,y+bh*.72);ctx.textAlign='left';ctx.fillText(item.value,pad+bw+6,y+bh*.72);}else{const bw=(w-pad-20)/items.length-8,bh=(h-45)*item.value/max,x=pad+i*(w-pad-20)/items.length;ctx.fillStyle=palette[i%palette.length];ctx.fillRect(x,h-25-bh,bw,bh);ctx.fillStyle=colors.muted;ctx.textAlign='center';ctx.fillText(item.label.length>11?item.label.slice(0,10)+'…':item.label,x+bw/2,h-7);}}); }
+    function lines(id, data) { const plot=setup(id); if(!plot || !data.length)return; const {ctx,width:w,height:h}=plot,p={l:42,r:42,t:18,b:30}, innerW=w-p.l-p.r,innerH=h-p.t-p.b; const series=[{key:'yield',color:colors.leaf,scale:1},{key:'rainfall',color:colors.wheat,scale:1000}]; const max= Math.max(...data.map(d=>Math.max(d.yield,d.rainfall/1000)),1); ctx.font=font; ctx.strokeStyle=colors.grid;ctx.fillStyle=colors.muted; for(let i=0;i<5;i++){const y=p.t+i*innerH/4;ctx.beginPath();ctx.moveTo(p.l,y);ctx.lineTo(w-p.r,y);ctx.stroke();ctx.textAlign='right';ctx.fillText((max*(4-i)/4).toFixed(1),p.l-7,y+4);} series.forEach(s=>{ctx.strokeStyle=s.color;ctx.lineWidth=3;ctx.beginPath();data.forEach((d,i)=>{const x=p.l+i*innerW/(data.length-1||1),v=d[s.key]/(s.scale||1),y=p.t+innerH-(v/max)*innerH;i?ctx.lineTo(x,y):ctx.moveTo(x,y);});ctx.stroke();});ctx.fillStyle=colors.muted;ctx.textAlign='center';data.forEach((d,i)=>{if(i%Math.ceil(data.length/8)===0)ctx.fillText(d.year,p.l+i*innerW/(data.length-1||1),h-8);}); }
+    function draw(){lines('trendChart',analytics.annual_trend);bars('modelChart',[{label:'Train R²',value:analytics.model.train_r2},{label:'Test R²',value:analytics.model.test_r2}],false,[colors.sage,colors.leaf]);bars('cropYieldChart',analytics.top_crop_yields,true,[colors.leaf,colors.sage,colors.wheat]);bars('cropChart',analytics.crop_distribution,true,[colors.leaf,colors.sage]);bars('stateChart',analytics.state_distribution,true,[colors.wheat,colors.sage]);bars('seasonChart',analytics.season_distribution,false,[colors.leaf,colors.wheat,colors.sage]);}
+    draw(); window.addEventListener('resize',draw);
+}());
+</script>
 {% endblock %}

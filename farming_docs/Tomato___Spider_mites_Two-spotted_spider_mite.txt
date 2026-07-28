@@ -1,0 +1,19 @@
+CROP: Tomato
+DISEASE: Two-Spotted Spider Mite Infestation
+PATHOGEN/CAUSE: Tetranychus urticae (mite pest, not a disease pathogen)
+
+SYMPTOMS:
+Fine yellow/white stippling (tiny dots) on leaves, giving a bronzed or speckled appearance. Fine webbing visible on the underside of leaves and between stems in heavy infestations. Leaves eventually turn yellow/bronze and drop.
+
+FAVORABLE CONDITIONS FOR SPREAD:
+Hot, dry weather (above 27°C) and dusty conditions favor rapid mite population growth. Often worsens under drought-stressed plants.
+
+ORGANIC / NON-CHEMICAL TREATMENT:
+Insecticidal soap or neem oil sprays targeting the underside of leaves where mites live. Introduce natural predators such as predatory mites (Phytoseiulus persimilis) or ladybugs where feasible. Spray plants with water to physically dislodge mites.
+
+CHEMICAL TREATMENT:
+Miticides (acaricides) specifically labeled for spider mites, since regular insecticides are often ineffective against mites. Rotate miticide classes to avoid resistance buildup. Confirm product and dosage with local agricultural suppliers.
+(Note: Always confirm exact product names and dosages with a local agricultural extension officer or product label, as recommendations vary by region and formulation.)
+
+PREVENTION:
+Avoid drought stress by maintaining consistent irrigation. Reduce dust around plants. Monitor regularly, especially in hot weather, since populations can explode quickly. Avoid excess nitrogen fertilization, which can favor mite reproduction.

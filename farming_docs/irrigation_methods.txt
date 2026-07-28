@@ -1,0 +1,8 @@
+TOPIC: Irrigation Methods
+CATEGORY: Water Management
+
+CONTENT:
+Common irrigation methods include flood/surface irrigation (simple, low-cost, but water-inefficient), sprinkler irrigation (more uniform coverage, moderate efficiency, suited to a wide range of crops), and drip irrigation (delivers water directly to the root zone, highest water-use efficiency, ideal for high-value crops like vegetables and fruit orchards). Choice of method depends on crop type, water availability, soil type, and budget. Over-irrigation can lead to waterlogging, root rot, and nutrient leaching, while under-irrigation causes water stress, reduced growth, and lower yield. Scheduling irrigation based on crop growth stage and soil moisture monitoring (rather than a fixed calendar) improves both water efficiency and yield outcomes.
+
+RELEVANCE TO YIELD PREDICTION:
+Water stress during critical growth stages (flowering, grain fill) has one of the largest negative impacts on final yield. Yield prediction models often weight rainfall and irrigation data heavily because water availability during these sensitive windows matters more than total seasonal water.

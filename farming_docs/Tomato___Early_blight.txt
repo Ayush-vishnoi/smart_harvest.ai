@@ -1,0 +1,19 @@
+CROP: Tomato
+DISEASE: Early Blight
+PATHOGEN/CAUSE: Alternaria solani (fungus)
+
+SYMPTOMS:
+Dark brown spots with concentric rings (target-like pattern) on older, lower leaves first. Yellowing around spots, leaf drop progressing upward. Can also affect stems (dark lesions) and fruit (sunken dark spots near the stem end).
+
+FAVORABLE CONDITIONS FOR SPREAD:
+Warm temperatures (24-29°C), high humidity, alternating wet and dry periods. Spreads through wind, rain splash, and infected debris.
+
+ORGANIC / NON-CHEMICAL TREATMENT:
+Neem oil or copper-based sprays applied at early symptom onset. Remove infected lower leaves promptly. Mulch to reduce soil splash onto leaves.
+
+CHEMICAL TREATMENT:
+Fungicides containing chlorothalonil or mancozeb, applied on a preventive schedule once conditions favor disease. Confirm exact dosage with local extension guidelines.
+(Note: Always confirm exact product names and dosages with a local agricultural extension officer or product label, as recommendations vary by region and formulation.)
+
+PREVENTION:
+Rotate crops (avoid planting after other solanaceous crops for 2+ years). Stake or cage plants for airflow. Water at the base, not overhead. Ensure balanced fertilization; avoid nitrogen excess/potassium deficiency, which increases susceptibility.

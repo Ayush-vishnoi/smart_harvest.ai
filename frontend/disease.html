@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <div>
+            <div class="eyebrow">Plant health</div>
+            <h1>Detect a plant disease</h1>
+            <p>Upload a clear photo of a leaf and the MobileNetV3 model will return its most likely condition.</p>
+        </div>
+    </div>
+
+    <div class="form-card" style="max-width:760px;margin:0 auto 32px">
+        <form id="diseaseForm" enctype="multipart/form-data">
+            <label class="upload-zone" for="imageInput" id="uploadZone" style="display:block;border:2px dashed rgba(61,122,69,.3);border-radius:16px;padding:42px 24px;text-align:center;cursor:pointer;background:rgba(61,122,69,.04)">
+                <div id="uploadPrompt">
+                    <div style="font-size:3rem;margin-bottom:12px">🍃</div>
+                    <strong style="font-size:1.1rem">Choose a leaf image</strong>
+                    <p style="color:var(--muted);margin:8px 0 0">JPG, JPEG, or PNG · clear, well-lit images work best</p>
+                </div>
+                <img id="preview" alt="Selected leaf preview" hidden style="max-height:280px;max-width:100%;border-radius:12px;object-fit:contain">
+                <input id="imageInput" name="image" type="file" accept="image/png,image/jpeg" required hidden>
+            </label>
+            <div class="btn-row" style="margin-top:20px">
+                <button class="btn btn-primary" type="submit" id="submitButton">Analyze image</button>
+                <button class="btn" type="button" id="clearButton" hidden>Choose another</button>
+            </div>
+        </form>
+        <p id="status" role="status" style="margin:18px 0 0;color:var(--muted)"></p>
+    </div>
+
+    <section id="result" class="result-card" hidden style="max-width:760px;margin:0 auto">
+        <div class="eyebrow">Model result</div>
+        <h2 id="predictionLabel" style="margin:8px 0">—</h2>
+        <p id="predictionConfidence" style="font-family:'DM Mono',monospace;color:var(--leaf);font-size:1.15rem"></p>
+        <div id="topPredictions" style="margin-top:24px"></div>
+        <p style="color:var(--muted);font-size:.85rem;margin-top:24px">This is an AI screening result, not a substitute for advice from an agronomist.</p>
+    </section>
+</div>
+
+<script>
+const form = document.getElementById('diseaseForm');
+const input = document.getElementById('imageInput');
+const preview = document.getElementById('preview');
+const prompt = document.getElementById('uploadPrompt');
+const submit = document.getElementById('submitButton');
+const clear = document.getElementById('clearButton');
+const status = document.getElementById('status');
+const result = document.getElementById('result');
+
+input.addEventListener('change', () => {
+    const file = input.files[0];
+    if (!file) return;
+    preview.src = URL.createObjectURL(file);
+    preview.hidden = false;
+    prompt.hidden = true;
+    clear.hidden = false;
+    status.textContent = file.name;
+    result.hidden = true;
+});
+
+clear.addEventListener('click', () => {
+    input.value = '';
+    preview.hidden = true;
+    prompt.hidden = false;
+    clear.hidden = true;
+    status.textContent = '';
+    result.hidden = true;
+});
+
+form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    if (!input.files[0]) return;
+    submit.disabled = true;
+    submit.textContent = 'Analyzing…';
+    status.textContent = 'Running the disease model…';
+    result.hidden = true;
+    try {
+        const response = await fetch('/api/predict/disease', { method: 'POST', body: new FormData(form) });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || 'Disease prediction failed');
+        document.getElementById('predictionLabel').textContent = data.prediction.label.replace(/_/g, ' ');
+        document.getElementById('predictionConfidence').textContent = `${data.prediction.confidence}% confidence`;
+        document.getElementById('topPredictions').innerHTML = data.top_predictions.map((item, index) => `
+            <div style="display:flex;justify-content:space-between;gap:20px;padding:12px 0;border-bottom:1px solid rgba(92,61,30,.1)">
+                <span>${index + 1}. ${item.label.replace(/_/g, ' ')}</span>
+                <strong>${item.confidence}%</strong>
+            </div>`).join('');
+        result.hidden = false;
+        status.textContent = 'Analysis complete.';
+    } catch (error) {
+        status.textContent = error.message;
+    } finally {
+        submit.disabled = false;
+        submit.textContent = 'Analyze image';
+    }
+});
+</script>
+{% endblock %}

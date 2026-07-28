@@ -9,17 +9,16 @@
             🇮🇳 India's Agricultural Intelligence
         </div>
         <h1 style="font-family:'Playfair Display',serif;font-size:clamp(2rem,4vw,3rem);font-weight:900;line-height:1.2;color:var(--soil);margin-bottom:20px">
-            Predict Yield. <em style="color:var(--leaf)">Optimize</em> Irrigation.<br>
-            Grow Smarter.
+            Predict Crop Yield.<br>
+            <em style="color:var(--leaf)">Grow Smarter.</em>
         </h1>
         <p style="font-size:1.05rem;line-height:1.7;color:var(--muted);max-width:600px;margin:0 auto 36px">
-            AI crop intelligence for every Indian farmer — simple enough for anyone to use, 
-            powerful enough for researchers. Trained on 235,000+ real field records.
+            AI crop yield prediction and plant-leaf disease screening for every Indian farmer — simple enough for anyone to use, powerful enough for researchers.
         </p>
         
         <div style="display:flex;gap:32px;justify-content:center;margin-bottom:40px">
             <div style="text-align:center">
-                <div style="font-family:'DM Mono',monospace;font-size:1.5rem;font-weight:500;color:var(--leaf)">79.2%</div>
+                <div style="font-family:'DM Mono',monospace;font-size:1.5rem;font-weight:500;color:var(--leaf)">82.4%</div>
                 <div style="font-size:0.75rem;color:var(--muted);margin-top:2px">Honest R²</div>
             </div>
             <div style="text-align:center">
@@ -28,7 +27,7 @@
             </div>
             <div style="text-align:center">
                 <div style="font-family:'DM Mono',monospace;font-size:1.5rem;font-weight:500;color:var(--leaf)">32</div>
-                <div style="font-size:0.75rem;color:var(--muted);margin-top:2px">States</div>
+                <div style="font-size:0.75rem;color:var(--muted);margin-top:2px">Dataset Regions</div>
             </div>
             <div style="text-align:center">
                 <div style="font-family:'DM Mono',monospace;font-size:1.5rem;font-weight:500;color:var(--leaf)">226K</div>
@@ -36,16 +35,11 @@
             </div>
         </div>
         
-        <div style="display:flex;gap:12px;justify-content:center">
+        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
             <a href="{{ url_for('yield_predict') }}" class="btn btn-primary">🌿 Try Yield Predictor</a>
+            <a href="{{ url_for('web_disease') }}" class="btn btn-secondary">🍃 Detect Disease</a>
             <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">View Dashboard</a>
         </div>
-        
-        {% if not models_loaded %}
-        <div class="error-card" style="max-width:600px;margin:40px auto 0">
-            ⚠️ Models not loaded. Please train models first by running the training scripts.
-        </div>
-        {% endif %}
     </div>
     
     <div style="background:rgba(61,122,69,0.06);border:1px solid rgba(61,122,69,0.12);border-radius:16px;padding:32px;max-width:800px;margin:0 auto">
@@ -65,6 +59,13 @@
                 <h4 style="font-size:0.9rem;font-weight:700;color:var(--soil);margin-bottom:6px">Research Mode</h4>
                 <p style="font-size:0.85rem;color:var(--muted);line-height:1.6">
                     All 15 parameters. Full precision for agronomists and scientists.
+                </p>
+            </div>
+            <div style="background:white;border-radius:12px;padding:20px;grid-column:1/-1">
+                <div style="font-size:1.6rem;margin-bottom:8px">🍃</div>
+                <h4 style="font-size:0.9rem;font-weight:700;color:var(--soil);margin-bottom:6px">Disease Screening</h4>
+                <p style="font-size:0.85rem;color:var(--muted);line-height:1.6">
+                    Upload a clear leaf photo to receive the top three likely PlantVillage conditions.
                 </p>
             </div>
         </div>

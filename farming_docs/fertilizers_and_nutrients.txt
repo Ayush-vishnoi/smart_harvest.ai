@@ -1,0 +1,8 @@
+TOPIC: Fertilizers and Plant Nutrients
+CATEGORY: Nutrient Management
+
+CONTENT:
+Plants require macronutrients (Nitrogen, Phosphorus, Potassium - NPK) in the largest quantities, along with secondary nutrients (Calcium, Magnesium, Sulfur) and micronutrients (Zinc, Boron, Iron, Manganese) in smaller amounts. Nitrogen promotes leafy vegetative growth; Phosphorus supports root development and flowering; Potassium improves overall plant vigor, disease resistance, and fruit/grain quality. Fertilizer application should be based on soil test results rather than fixed amounts, since over-application wastes money, can harm soil health, and may cause nutrient runoff into water bodies. Organic options (compost, farmyard manure, green manure, vermicompost) improve soil structure and provide slow-release nutrients, while chemical fertilizers offer faster, more precise nutrient delivery. A balanced approach combining both is generally recommended for long-term soil health and consistent yield.
+
+RELEVANCE TO YIELD PREDICTION:
+Nutrient deficiency, particularly nitrogen and phosphorus, is a very common limiting factor for yield. Yield prediction models often use soil nutrient data (where available) as a key input feature, since deficiency symptoms may not be visible until yield loss has already begun.

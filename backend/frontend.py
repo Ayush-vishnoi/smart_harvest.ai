@@ -1,42 +1,21 @@
 #!/usr/bin/env python3
+from pathlib import Path
+
+import pandas as pd
 from flask import render_template, request, redirect, url_for, session
-import numpy as np
 
 
 class FrontendController:
 
     def __init__(self, models_dict):
-        self.rf_model     = models_dict['rf_model']
-        self.gb_model     = models_dict['gb_model']
-        self.y_scaler     = models_dict['y_scaler']
-        self.y_le         = models_dict['y_le']
-        self.y_features   = list(models_dict['y_features'])
-        self.unique_vals  = models_dict['unique_vals']
-        self.y_metrics    = models_dict['y_metrics']
-        self.irr_clf      = models_dict['irr_clf']
-        self.irr_scaler   = models_dict['irr_scaler']
-        self.irr_le       = models_dict['irr_le']
-        self.irr_target_le= models_dict['irr_target_le']
-        self.irr_features = list(models_dict['irr_features'])
-        self.models_loaded= models_dict['models_loaded']
-
-    def safe_encode(self, le, value):
-        val = str(value).strip().lower()
-        if val in le.classes_:
-            return int(le.transform([val])[0])
-        for cls in le.classes_:
-            if val in cls or cls in val:
-                return int(le.transform([cls])[0])
-        return 0
+        self.yield_service = models_dict['yield_service']
+        self.unique_vals = models_dict['unique_vals']
+        self.y_metrics = models_dict['y_metrics']
+        self.models_loaded = models_dict['models_loaded']
+        self._dashboard_analytics = None
 
     def get_irrigation_advice(self, need_level):
-        advice = {
-            "Low":       {"frequency": "Once every 10–14 days", "amount": "25–40 mm per session",  "method": "Drip irrigation",                "notes": "Natural rainfall likely sufficient. Monitor soil moisture."},
-            "Moderate":  {"frequency": "Once every 7 days",     "amount": "40–60 mm per session",  "method": "Sprinkler or furrow irrigation",  "notes": "Supplement rainfall as needed. Adjust based on soil moisture."},
-            "High":      {"frequency": "Every 4–5 days",        "amount": "60–80 mm per session",  "method": "Flood or sprinkler irrigation",   "notes": "Regular irrigation required. Monitor drainage."},
-            "Very High": {"frequency": "Every 2–3 days",        "amount": "80–100 mm per session", "method": "Continuous drip or flood irrigation", "notes": "High water demand. Mulching recommended to retain moisture."},
-        }
-        return advice.get(need_level, advice["Moderate"])
+        return "Irrigation recommendations are not available in this release."
 
     def convert_acres_to_hectares(self, acres):
         return float(acres) * 0.404686
@@ -58,33 +37,27 @@ class FrontendController:
                 mode      = request.form.get("mode", "simple")
                 form_data = dict(request.form)
 
-                cat_feats = ['state', 'district', 'crop', 'season']
-                row = {}
-                for feat in self.y_features:
-                    if feat in cat_feats:
-                        val = request.form.get(feat, '').strip().lower()
-                        row[feat] = self.safe_encode(self.y_le[feat], val)
-                    else:
-                        row[feat] = float(request.form.get(feat, 0) or 0)
+                payload = dict(request.form)
+                if mode == 'simple':
+                    area_hectares = self.convert_acres_to_hectares(request.form.get('area_acres', ''))
+                    payload.update({
+                        'area': area_hectares,
+                        'crop_year': 2020,
+                        'annual_rainfall': float(request.form.get('annual_rainfall') or 1247.6),
+                        'fertilizer': area_hectares * 144.49,
+                        'pesticide': area_hectares * 0.27,
+                    })
+                pred, raw_pred = self.yield_service.predict(payload)
+                mae = float(self.y_metrics.get('mae', 0))
 
-                if mode == "simple" and "area_acres" in request.form:
-                    row["area"] = self.convert_acres_to_hectares(float(request.form.get("area_acres", 0) or 0))
-
-                # Build numpy array in exact feature order — avoids ALL pandas/indexing issues
-                X = np.array([[row[f] for f in self.y_features]], dtype=float)
-                X_scaled = self.y_scaler.transform(X)
-
-                rf_pred = float(self.rf_model.predict(X_scaled)[0])
-                gb_pred = float(self.gb_model.predict(X_scaled)[0])
-                hybrid  = max(0.0, min(0.55 * rf_pred + 0.45 * gb_pred, 500.0))
-
-                area       = row.get("area", 0)
-                total_prod = round(hybrid * area, 1) if area > 0 else None
+                area = float(payload["area"])
+                total_prod = round(pred * area, 1) if area > 0 else None
 
                 result = {
-                    "yield": round(hybrid, 2),
-                    "low":   round(hybrid * 0.90, 2),
-                    "high":  round(hybrid * 1.10, 2),
+                    "yield": round(pred, 2),
+                    "raw_prediction": round(raw_pred, 2),
+                    "low":   round(max(0, pred - mae), 2),
+                    "high":  round(pred + mae, 2),
                     "total_prod": total_prod,
                     "crop":   request.form.get("crop", ""),
                     "season": request.form.get("season", ""),
@@ -101,87 +74,105 @@ class FrontendController:
                 session['yield_form_data'] = dict(request.form)
                 return redirect(url_for('web_yield', mode=mode))
 
-        options = {
-            "states":    sorted(self.unique_vals.get("state", [])),
-            "districts": sorted(self.unique_vals.get("district", [])),
-            "crops":     sorted(self.unique_vals.get("crop", [])),
-            "seasons":   ["kharif", "rabi", "whole year", "summer", "winter", "autumn"]
-        }
+        options = self.yield_service.options()
         return render_template("yield.html", mode=mode, options=options,
                                result=result, error=error, form_data=form_data)
 
     def irrigation_page(self):
-        if not self.models_loaded:
-            return render_template("error.html", message="Models not loaded. Please train models first.")
+        return render_template("error.html", message="Irrigation feature has been removed.")
 
-        mode      = request.args.get("mode", "simple")
-        result    = session.pop('irrigation_result', None)
-        error     = session.pop('irrigation_error', None)
-        form_data = session.pop('irrigation_form_data', {})
+    def _build_dashboard_analytics(self):
+        """Build a JSON-safe analytics snapshot once per application worker."""
+        data_path = Path(__file__).resolve().parent.parent / "crop_yield.csv"
+        data = pd.read_csv(data_path)
+        data.columns = data.columns.str.strip().str.lower()
+        for column in ("crop", "state", "season"):
+            data[column] = data[column].astype(str).str.strip()
 
-        if request.method == "POST":
-            try:
-                mode      = request.form.get("mode", "simple")
-                form_data = dict(request.form)
+        def ranked_counts(column, limit=8):
+            counts = data[column].value_counts().head(limit)
+            return [{"label": str(label), "value": int(value)} for label, value in counts.items()]
 
-                # irr_le is always a dict: {'crop': le, 'state': le, 'season': le}
-                cat_feats = list(self.irr_le.keys())
-                row = {}
-                for feat in self.irr_features:
-                    if feat in cat_feats:
-                        val = request.form.get(feat, '').strip().lower()
-                        row[feat] = self.safe_encode(self.irr_le[feat], val)
-                    else:
-                        row[feat] = float(request.form.get(feat, 0) or 0)
+        annual = data.groupby("crop_year", as_index=False).agg(
+            mean_yield=("yield", "mean"),
+            rainfall=("annual_rainfall", "mean"),
+        )
+        crop_yield = (
+            data.groupby("crop", as_index=False)
+            .agg(mean_yield=("yield", "mean"), records=("yield", "size"))
+            .query("records >= 100")
+            .nlargest(8, "mean_yield")
+        )
+        test_r2 = float(self.y_metrics.get("r2", 0))
+        train_r2 = float(self.y_metrics.get("train_r2", 0))
+        gap = float(self.y_metrics.get("overfitting_gap", max(0, train_r2 - test_r2)))
 
-                # Build numpy array in exact feature order
-                X = np.array([[row[f] for f in self.irr_features]], dtype=float)
-                X_scaled = self.irr_scaler.transform(X)
-
-                pred_idx   = self.irr_clf.predict(X_scaled)[0]
-                pred_label = self.irr_target_le.inverse_transform([pred_idx])[0]
-                confidence = round(float(self.irr_clf.predict_proba(X_scaled)[0].max()) * 100, 1)
-                advice     = self.get_irrigation_advice(pred_label)
-
-                result = {
-                    "need":       pred_label,
-                    "confidence": confidence,
-                    "advice":     advice,
-                    "crop":       request.form.get("crop", ""),
-                    "mode":       mode
+        return {
+            "summary": {
+                "records": int(len(data)),
+                "crops": int(data["crop"].nunique()),
+                "regions": int(data["state"].nunique()),
+                "seasons": int(data["season"].nunique()),
+                "year_start": int(data["crop_year"].min()),
+                "year_end": int(data["crop_year"].max()),
+                "mean_yield": round(float(data["yield"].mean()), 2),
+                "median_rainfall": round(float(data["annual_rainfall"].median()), 1),
+            },
+            "model": {
+                "train_r2": round(train_r2 * 100, 2),
+                "test_r2": round(test_r2 * 100, 2),
+                "gap": round(gap * 100, 2),
+                "mae": round(float(self.y_metrics.get("mae", 0)), 3),
+                "rmse": round(float(self.y_metrics.get("rmse", 0)), 3),
+                "train_years": self.y_metrics.get("train_years", "1997-2015"),
+                "test_years": self.y_metrics.get("test_years", "2016-2020"),
+            },
+            "crop_distribution": ranked_counts("crop"),
+            "state_distribution": ranked_counts("state"),
+            "season_distribution": ranked_counts("season", 6),
+            "annual_trend": [
+                {
+                    "year": int(row.crop_year),
+                    "yield": round(float(row.mean_yield), 3),
+                    "rainfall": round(float(row.rainfall), 1),
                 }
-                session['irrigation_result']    = result
-                session['irrigation_form_data'] = form_data
-                return redirect(url_for('web_irrigation', mode=mode))
-
-            except Exception as e:
-                session['irrigation_error']     = f"Prediction failed: {str(e)}"
-                session['irrigation_form_data'] = dict(request.form)
-                return redirect(url_for('web_irrigation', mode=mode))
-
-        options = {
-            "states":  sorted(self.unique_vals.get("state", [])),
-            "crops":   sorted(self.unique_vals.get("crop", [])),
-            "seasons": ["kharif", "rabi", "whole year", "summer", "winter", "autumn"]
+                for row in annual.itertuples(index=False)
+            ],
+            "top_crop_yields": [
+                {
+                    "label": str(row.crop),
+                    "value": round(float(row.mean_yield), 2),
+                    "records": int(row.records),
+                }
+                for row in crop_yield.itertuples(index=False)
+            ],
+            "health": {
+                "status": "Healthy" if test_r2 >= 0.8 and gap <= 0.1 else "Review advised",
+                "generalization": "Good" if gap <= 0.1 else "Potential overfitting",
+                "leakage_control": "Production feature removed",
+                "validation": "Time-based holdout",
+            },
         }
-        return render_template("irrigation.html", mode=mode, options=options,
-                               result=result, error=error, form_data=form_data)
 
     def dashboard_page(self):
-        stats = {
-            "test_r2": self.y_metrics.get("r2", 0) * 100,
-            "mae":     self.y_metrics.get("mae", 0),
-            "records": "226K",
-            "crops":   "54"
-        }
-        recent = [
-            {"crop": "Rice",      "state": "Karnataka",    "yield": 4.21,  "irrigation": "Moderate"},
-            {"crop": "Wheat",     "state": "Punjab",       "yield": 5.83,  "irrigation": "High"},
-            {"crop": "Cotton",    "state": "Gujarat",      "yield": 2.97,  "irrigation": "Very High"},
-            {"crop": "Maize",     "state": "Maharashtra",  "yield": 3.54,  "irrigation": "Moderate"},
-            {"crop": "Sugarcane", "state": "Uttar Pradesh","yield": 72.10, "irrigation": "Very High"},
-        ]
-        return render_template("dashboard.html", stats=stats, recent=recent)
+        if self._dashboard_analytics is None:
+            try:
+                self._dashboard_analytics = self._build_dashboard_analytics()
+            except Exception:
+                self._dashboard_analytics = {
+                    "summary": {"records": 0, "crops": 0, "regions": 0, "seasons": 0,
+                                "year_start": 0, "year_end": 0, "mean_yield": 0,
+                                "median_rainfall": 0},
+                    "model": {"train_r2": 0, "test_r2": 0, "gap": 0, "mae": 0,
+                              "rmse": 0, "train_years": "N/A", "test_years": "N/A"},
+                    "crop_distribution": [], "state_distribution": [],
+                    "season_distribution": [], "annual_trend": [],
+                    "top_crop_yields": [],
+                    "health": {"status": "Data unavailable", "generalization": "Unknown",
+                               "leakage_control": "Production feature removed",
+                               "validation": "Time-based holdout"},
+                }
+        return render_template("dashboard.html", analytics=self._dashboard_analytics)
 
     def error_page(self, message):
         return render_template("error.html", message=message)
@@ -215,3 +206,8 @@ def register_frontend_routes(app, frontend_controller):
         return frontend_controller.dashboard_page()
 
     app.add_url_rule("/dashboard", view_func=lambda: frontend_controller.dashboard_page(), endpoint="dashboard")
+
+    @app.route("/web/disease")
+    @app.route("/disease")
+    def web_disease():
+        return render_template("disease.html")

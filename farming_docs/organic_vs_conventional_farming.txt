@@ -1,0 +1,8 @@
+TOPIC: Organic vs Conventional Farming Approaches
+CATEGORY: Farming Systems
+
+CONTENT:
+Conventional farming typically uses synthetic fertilizers and pesticides to maximize yield and manage pests/diseases quickly, often achieving higher short-term yields. Organic farming avoids synthetic inputs, relying instead on compost, crop rotation, biological pest control, and natural soil-building practices; it often has somewhat lower yields initially but can improve long-term soil health and reduce input costs and environmental impact over time. Many farmers use an integrated approach, applying organic practices as the foundation (soil health, rotation, biological control) while using targeted chemical inputs only when necessary, balancing yield, cost, and sustainability.
+
+RELEVANCE TO YIELD PREDICTION:
+Farming system type is a relevant contextual factor in yield prediction, since organic and conventional fields under otherwise similar conditions can show meaningfully different yield potential and variability.

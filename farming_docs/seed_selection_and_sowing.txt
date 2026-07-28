@@ -1,0 +1,8 @@
+TOPIC: Seed Selection and Sowing Practices
+CATEGORY: Crop Planning
+
+CONTENT:
+Using certified, high-quality seed suited to the local climate and soil conditions is one of the most impactful decisions a farmer makes, since seed quality affects germination rate, disease resistance, and yield potential from the start. Hybrid and improved varieties often offer higher yield potential and better disease resistance compared to traditional/local varieties, though local varieties may be better adapted to specific regional stresses (drought, salinity). Sowing at the correct time and depth for the local climate is critical - sowing too early or late can expose crops to unfavorable temperatures, pest pressure, or reduced growing season length. Proper plant spacing based on crop type ensures adequate access to sunlight, water, and nutrients without overcrowding.
+
+RELEVANCE TO YIELD PREDICTION:
+Sowing date and seed variety are commonly used as direct input features in yield prediction models, since they significantly affect the crop's exposure to seasonal weather risk and its genetic yield ceiling.

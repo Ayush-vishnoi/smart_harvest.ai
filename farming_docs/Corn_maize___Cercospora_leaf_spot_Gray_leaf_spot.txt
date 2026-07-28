@@ -1,0 +1,19 @@
+CROP: Corn (Maize)
+DISEASE: Gray Leaf Spot
+PATHOGEN/CAUSE: Cercospora zeae-maydis (fungus)
+
+SYMPTOMS:
+Rectangular, tan to gray lesions that run parallel to leaf veins, often with a yellow halo initially. Lesions can merge, causing significant leaf blighting and reduced photosynthesis, which impacts yield.
+
+FAVORABLE CONDITIONS FOR SPREAD:
+Warm, humid weather with extended periods of leaf wetness. More severe in fields with continuous corn cropping and reduced tillage (since the fungus survives in crop residue).
+
+ORGANIC / NON-CHEMICAL TREATMENT:
+Practice residue management (incorporate crop debris to speed decomposition) since the fungus overwinters in corn residue. Choose resistant hybrids where possible as a primary organic strategy.
+
+CHEMICAL TREATMENT:
+Foliar fungicides containing strobilurins or triazoles, applied at early symptom onset, especially in high-risk fields (continuous corn, reduced tillage, susceptible hybrids). Confirm product and timing with local agronomic guidance.
+(Note: Always confirm exact product names and dosages with a local agricultural extension officer or product label, as recommendations vary by region and formulation.)
+
+PREVENTION:
+Rotate away from corn for at least one season. Select resistant hybrid varieties. Manage crop residue through tillage where appropriate. Avoid excessive plant density, which increases humidity within the canopy.

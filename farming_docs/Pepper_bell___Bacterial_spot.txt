@@ -1,0 +1,19 @@
+CROP: Bell Pepper
+DISEASE: Bacterial Spot
+PATHOGEN/CAUSE: Xanthomonas campestris pv. vesicatoria (bacterium)
+
+SYMPTOMS:
+Small, water-soaked spots on leaves that become dark brown/black with a yellow halo; leaves may yellow and drop. Fruit develops raised, scab-like brown lesions that reduce marketability.
+
+FAVORABLE CONDITIONS FOR SPREAD:
+Warm, humid, rainy weather. Spreads via splashing water, contaminated tools, and infected seed/transplants.
+
+ORGANIC / NON-CHEMICAL TREATMENT:
+Copper-based bactericide sprays applied preventively, especially before rainy periods. Remove and destroy infected plant debris. Avoid overhead irrigation.
+
+CHEMICAL TREATMENT:
+Copper-based products, sometimes combined with mancozeb to slow resistance development, applied on a regular preventive schedule. Confirm exact products and rates with local agricultural extension, as copper resistance in this bacterium is increasingly common in some regions.
+(Note: Always confirm exact product names and dosages with a local agricultural extension officer or product label, as recommendations vary by region and formulation.)
+
+PREVENTION:
+Use certified disease-free seed and transplants. Rotate crops away from peppers/tomatoes for 2-3 years. Avoid overhead watering and working with wet plants. Space plants adequately for airflow.

@@ -1,0 +1,8 @@
+TOPIC: Crop Rotation and Planning
+CATEGORY: Crop Planning
+
+CONTENT:
+Crop rotation is the practice of growing different types of crops in the same area across seasons, rather than repeatedly planting the same crop. It helps break pest and disease cycles (many pathogens are crop-specific and cannot survive without their host), improves soil structure and fertility (e.g., rotating with legumes like beans or lentils adds nitrogen to the soil naturally), and reduces the risk of nutrient depletion that comes from continuous single-crop farming. A typical rotation might alternate a cereal crop (like wheat or corn, which are heavy nitrogen users) with a legume crop (which fixes nitrogen back into the soil), followed by a different family entirely to further break disease cycles.
+
+RELEVANCE TO YIELD PREDICTION:
+Fields under poor rotation practices (same crop for many consecutive seasons) often show gradually declining yield due to soil nutrient depletion and pest/disease buildup, even without an obvious single cause. This is an important contextual factor in yield prediction beyond just weather and soil data.

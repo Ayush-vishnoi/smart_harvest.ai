@@ -1,0 +1,16 @@
+{
+  "mae": 1.3816877101352583,
+  "rmse": 2.9511874199752133,
+  "r2": 0.8268041801499644,
+  "train_r2": 0.8928543642386695,
+  "overfitting_gap": 0.06605018408870511,
+  "model": "XGBoost with one-hot categorical preprocessing",
+  "dataset": "crop_yield.csv",
+  "target": "yield",
+  "leakage_removed": [
+    "production"
+  ],
+  "outlier_filter": "target 2nd-98th percentiles",
+  "train_years": "1997-2015",
+  "test_years": "2016-2020"
+}

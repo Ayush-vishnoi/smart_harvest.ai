@@ -1,0 +1,19 @@
+CROP: Tomato
+DISEASE: Target Spot
+PATHOGEN/CAUSE: Corynespora cassiicola (fungus)
+
+SYMPTOMS:
+Brown lesions with concentric rings (similar to early blight) on leaves, stems, and fruit. Lesions can merge to form larger necrotic patches, causing significant leaf drop and fruit lesions that reduce marketability.
+
+FAVORABLE CONDITIONS FOR SPREAD:
+Warm, humid conditions with extended leaf wetness. Spreads through wind-blown spores, rain splash, and infected debris.
+
+ORGANIC / NON-CHEMICAL TREATMENT:
+Copper-based fungicides applied preventively. Remove and destroy heavily infected leaves and fruit. Improve airflow around plants through pruning and spacing.
+
+CHEMICAL TREATMENT:
+Fungicides containing chlorothalonil or azoxystrobin, applied per label guidance during favorable disease conditions. Check with local extension for approved products in your region.
+(Note: Always confirm exact product names and dosages with a local agricultural extension officer or product label, as recommendations vary by region and formulation.)
+
+PREVENTION:
+Practice crop rotation. Avoid overhead irrigation. Stake and prune for good air circulation. Remove plant debris after harvest to reduce carryover of the fungus to the next season.

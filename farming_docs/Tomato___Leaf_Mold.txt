@@ -1,0 +1,19 @@
+CROP: Tomato
+DISEASE: Leaf Mold
+PATHOGEN/CAUSE: Passalora fulva (fungus, syn. Fulvia fulva / Cladosporium fulvum)
+
+SYMPTOMS:
+Pale green to yellow spots on upper leaf surface; olive-green to grayish-brown velvety mold growth on the underside directly beneath the spots. Affected leaves curl, wither, and drop. Mainly a greenhouse/high-humidity problem.
+
+FAVORABLE CONDITIONS FOR SPREAD:
+High humidity (above 85%) and moderate temperatures, common in greenhouses or densely planted, poorly ventilated fields.
+
+ORGANIC / NON-CHEMICAL TREATMENT:
+Improve ventilation and reduce humidity around plants. Remove and destroy infected leaves. Copper-based fungicide sprays as a preventive measure.
+
+CHEMICAL TREATMENT:
+Fungicides such as chlorothalonil or mancozeb, especially in greenhouse settings where humidity is hard to control. Check local recommendations for approved products.
+(Note: Always confirm exact product names and dosages with a local agricultural extension officer or product label, as recommendations vary by region and formulation.)
+
+PREVENTION:
+Increase plant spacing and prune lower leaves for airflow. Use fans/ventilation in greenhouses. Avoid overhead watering and water early in the day so foliage dries quickly. Choose resistant tomato varieties where available.

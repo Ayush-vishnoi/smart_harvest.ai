@@ -1,0 +1,19 @@
+CROP: Tomato
+DISEASE: Late Blight
+PATHOGEN/CAUSE: Phytophthora infestans (oomycete)
+
+SYMPTOMS:
+Large, irregular water-soaked patches on leaves that turn brown/black rapidly, often with a pale green-yellow border. White fungal growth may appear on the underside of leaves in humid conditions. Fruit develops firm, brown, greasy-looking lesions. Can destroy an entire crop within days under favorable conditions.
+
+FAVORABLE CONDITIONS FOR SPREAD:
+Cool, wet weather (15-24°C) with high humidity or prolonged leaf wetness. Spreads extremely fast via wind-blown spores and rain splash.
+
+ORGANIC / NON-CHEMICAL TREATMENT:
+Copper-based fungicides applied preventively before disease onset, especially before forecasted cool/wet spells. Remove and destroy infected plants immediately to slow spread; do not compost infected material.
+
+CHEMICAL TREATMENT:
+Fungicides containing chlorothalonil, mancozeb, or systemic options like metalaxyl for severe outbreaks. This disease spreads fast, so early and thorough coverage matters. Consult local agricultural extension for region-approved products and dosage.
+(Note: Always confirm exact product names and dosages with a local agricultural extension officer or product label, as recommendations vary by region and formulation.)
+
+PREVENTION:
+Plant resistant varieties where available. Avoid overhead irrigation. Ensure good drainage and spacing for airflow. Monitor weather forecasts for late blight-favorable conditions and apply preventive sprays proactively rather than reactively, since the disease progresses very quickly once established.

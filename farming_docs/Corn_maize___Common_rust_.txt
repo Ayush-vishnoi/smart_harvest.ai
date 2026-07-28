@@ -1,0 +1,19 @@
+CROP: Corn (Maize)
+DISEASE: Common Rust
+PATHOGEN/CAUSE: Puccinia sorghi (fungus)
+
+SYMPTOMS:
+Small, reddish-brown, elongated pustules scattered on both leaf surfaces, which rupture and release rust-colored spores. Severe infections can cause leaf yellowing and premature death, reducing yield.
+
+FAVORABLE CONDITIONS FOR SPREAD:
+Cool temperatures (16-23°C) with high humidity or dew. Spores are wind-dispersed over long distances.
+
+ORGANIC / NON-CHEMICAL TREATMENT:
+Choose resistant hybrids as the primary organic strategy, since rust is difficult to manage post-infection without fungicides. Monitor fields regularly during cool, humid periods.
+
+CHEMICAL TREATMENT:
+Fungicides containing strobilurins or triazoles applied at early pustule appearance, particularly on susceptible hybrids or in high-risk conditions. Confirm timing and product with local extension guidance.
+(Note: Always confirm exact product names and dosages with a local agricultural extension officer or product label, as recommendations vary by region and formulation.)
+
+PREVENTION:
+Plant rust-resistant corn hybrids, which are widely available and highly effective. Monitor weather conditions favorable for rust (cool, humid) and scout fields regularly during those periods.

@@ -1,0 +1,8 @@
+TOPIC: Soil Types and Management
+CATEGORY: Soil
+
+CONTENT:
+Soil is the foundation of crop yield and is broadly classified into sandy, clay, silty, and loamy types. Sandy soil drains quickly but holds fewer nutrients, suiting crops like groundnut and watermelon. Clay soil retains water and nutrients well but drains slowly and can waterlog, suiting rice and wheat. Loamy soil, a balanced mix of sand, silt, and clay, is considered ideal for most crops due to good drainage and nutrient retention. Soil management practices include regular testing of pH and nutrient levels (N-P-K), adding organic matter (compost, farmyard manure) to improve structure and fertility, and avoiding over-tillage which can degrade soil structure over time. Soil pH between 6.0 and 7.5 suits most crops; acidic soils can be corrected with lime, and alkaline soils with gypsum or organic matter.
+
+RELEVANCE TO YIELD PREDICTION:
+Soil type and health directly affects nutrient and water availability to roots, which is one of the strongest predictors of yield. Poor soil structure or nutrient deficiency is a common cause of lower-than-expected yield even when other conditions (rainfall, temperature) are favorable.

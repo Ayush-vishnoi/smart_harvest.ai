@@ -1,0 +1,19 @@
+CROP: Tomato
+DISEASE: Tomato Mosaic Virus (ToMV)
+PATHOGEN/CAUSE: Tobamovirus
+
+SYMPTOMS:
+Mottled light and dark green mosaic pattern on leaves, leaf distortion/curling, stunted growth, and reduced fruit yield and quality. Fruit may show internal browning in severe cases.
+
+FAVORABLE CONDITIONS FOR SPREAD:
+Spreads mechanically through contaminated hands, tools, and plant-to-plant contact during handling (pruning, tying, harvesting). Can also spread through infected seed.
+
+ORGANIC / NON-CHEMICAL TREATMENT:
+No chemical cure exists for viral infections. Remove and destroy infected plants to prevent spread. Disinfect hands and tools (e.g., with a dilute bleach or trisodium phosphate solution) between handling plants.
+
+CHEMICAL TREATMENT:
+Not applicable — there is no chemical treatment that cures a viral infection. Management is entirely preventive and sanitation-based.
+(Note: Always confirm exact product names and dosages with a local agricultural extension officer or product label, as recommendations vary by region and formulation.)
+
+PREVENTION:
+Use certified virus-free seed. Wash hands and disinfect tools regularly, especially after handling tobacco products (ToMV can be present in tobacco). Avoid working with plants when wet. Remove infected plants promptly and avoid planting tomatoes in the same soil consecutively.

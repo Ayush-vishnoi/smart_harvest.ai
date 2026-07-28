@@ -1,0 +1,19 @@
+CROP: Tomato
+DISEASE: Bacterial Spot
+PATHOGEN/CAUSE: Xanthomonas campestris pv. vesicatoria (bacterium)
+
+SYMPTOMS:
+Small, water-soaked spots on leaves that turn dark brown to black with a yellow halo. Spots may also appear on stems and fruit as raised, scab-like lesions. Severely affected leaves yellow and drop, reducing yield.
+
+FAVORABLE CONDITIONS FOR SPREAD:
+Warm, humid weather (24-30°C) with prolonged leaf wetness from rain or overhead irrigation. Spreads via splashing water, contaminated tools, and infected seed.
+
+ORGANIC / NON-CHEMICAL TREATMENT:
+Copper-based bactericide sprays applied preventively at first sign of disease. Remove and destroy infected plant debris. Avoid overhead watering; water at the base instead.
+
+CHEMICAL TREATMENT:
+Copper hydroxide or copper oxychloride based fungicide-bactericide sprays, applied on a regular schedule during humid periods. Follow label instructions and consult a local agricultural officer for exact dosage suited to your region and formulation.
+(Note: Always confirm exact product names and dosages with a local agricultural extension officer or product label, as recommendations vary by region and formulation.)
+
+PREVENTION:
+Use certified disease-free seed and transplants. Rotate crops with non-solanaceous plants for 2-3 years. Avoid working in fields when foliage is wet. Space plants for good air circulation. Disinfect tools between plants.

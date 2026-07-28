@@ -1,0 +1,19 @@
+CROP: Potato
+DISEASE: Early Blight
+PATHOGEN/CAUSE: Alternaria solani (fungus)
+
+SYMPTOMS:
+Dark brown spots with concentric rings on older leaves first, surrounded by a yellow halo. Progresses upward, causing significant leaf loss. Can also cause dark, sunken lesions on tubers.
+
+FAVORABLE CONDITIONS FOR SPREAD:
+Warm temperatures with alternating wet and dry periods; stressed or nutrient-deficient plants are more susceptible.
+
+ORGANIC / NON-CHEMICAL TREATMENT:
+Copper-based fungicide sprays at first symptoms. Remove infected foliage. Maintain balanced soil fertility to reduce plant stress and susceptibility.
+
+CHEMICAL TREATMENT:
+Fungicides containing chlorothalonil or mancozeb applied on a preventive schedule during the growing season. Confirm application rates with local agricultural guidance.
+(Note: Always confirm exact product names and dosages with a local agricultural extension officer or product label, as recommendations vary by region and formulation.)
+
+PREVENTION:
+Rotate crops with non-solanaceous plants for 2-3 years. Ensure adequate plant nutrition, especially nitrogen and potassium. Avoid overhead irrigation. Remove volunteer potato plants and crop debris after harvest.

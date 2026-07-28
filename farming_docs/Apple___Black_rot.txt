@@ -1,0 +1,19 @@
+CROP: Apple
+DISEASE: Black Rot
+PATHOGEN/CAUSE: Botryosphaeria obtusa (fungus)
+
+SYMPTOMS:
+Purple-bordered leaf spots ("frogeye leaf spot"), rotting fruit with concentric brown-black rings, and sunken cankers on branches. Infected fruit can mummify and remain on the tree.
+
+FAVORABLE CONDITIONS FOR SPREAD:
+Warm, humid weather. The fungus overwinters in cankers, mummified fruit, and dead wood, spreading via rain splash during the growing season.
+
+ORGANIC / NON-CHEMICAL TREATMENT:
+Prune out and destroy cankers, dead wood, and mummified fruit. Copper-based fungicide sprays during the growing season as a preventive measure.
+
+CHEMICAL TREATMENT:
+Fungicides such as captan or thiophanate-methyl applied during the growing season per local guidance, particularly after pruning wounds or during wet periods.
+(Note: Always confirm exact product names and dosages with a local agricultural extension officer or product label, as recommendations vary by region and formulation.)
+
+PREVENTION:
+Prune out dead/diseased wood during dormant season. Remove mummified fruit from trees and ground. Avoid tree stress (proper watering and fertilization) since stressed trees are more susceptible.

@@ -1,0 +1,19 @@
+CROP: Grape
+DISEASE: Leaf Blight (Isariopsis Leaf Spot)
+PATHOGEN/CAUSE: Pseudocercospora vitis (syn. Isariopsis leaf spot)
+
+SYMPTOMS:
+Angular, brown to reddish-brown spots on leaves, often with a yellow halo, which can merge and cause premature leaf drop, weakening the vine over time.
+
+FAVORABLE CONDITIONS FOR SPREAD:
+Warm, humid conditions with extended leaf wetness, common late in the growing season.
+
+ORGANIC / NON-CHEMICAL TREATMENT:
+Remove and destroy fallen infected leaves at season end to reduce overwintering inoculum. Copper-based fungicide sprays during humid periods as a preventive measure.
+
+CHEMICAL TREATMENT:
+Fungicides such as mancozeb applied on a protective schedule during warm, humid periods of the growing season. Confirm rates with local viticulture guidance.
+(Note: Always confirm exact product names and dosages with a local agricultural extension officer or product label, as recommendations vary by region and formulation.)
+
+PREVENTION:
+Improve canopy airflow through pruning and leaf removal around fruit zones. Avoid overhead irrigation. Clean up fallen leaves after harvest.

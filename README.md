@@ -1,134 +1,202 @@
 # 🌾 Smart Harvest AI
 
-Link-https://smart-harvest-ai.onrender.com
+AI-powered crop-yield prediction and plant-disease screening for Indian agriculture.
 
-AI-powered crop yield prediction and irrigation recommendation system for Indian agriculture.
-Trained on 235,000+ real records across 32 states, 55 crops, and 6 growing seasons.
+## Features
 
----
+- XGBoost crop-yield prediction using the trained feature set and time-based evaluation.
+- TensorFlow Lite plant-disease classification for PlantVillage leaf images.
+- Pinecone RAG farming assistant using local MiniLM embeddings and Groq Llama 3.3.
+- Server-rendered web UI at `/yield` and `/disease`, with an accessible floating chatbot on every page.
+- REST APIs for health, model options, yield prediction, disease prediction, chat, weather, and regional defaults.
 
-## 📊 Model Performance
+## Model performance
 
-| Model | Metric | Score |
-|-------|--------|-------|
-| Yield Prediction (RF + GB Hybrid) | R² | **79.2%** |
-| Irrigation Classifier (Rule based) | Accuracy | **95.97%** |
+| Model | Algorithm | R² | MAE |
+|---|---|---:|---:|
+| Yield prediction | XGBoost | 82.68% | 1.3817 t/ha |
+| Disease screening | MobileNetV3Small → TensorFlow Lite | PlantVillage classes | Top-3 confidence |
 
----
+Yield metrics use a time-based split: 1997–2015 for training and 2016–2020 for testing. The reported MAE is an average error estimate, not a guaranteed prediction interval.
 
-## 🗂 Project Structure
+## Project structure
 
-```
-smart_harvest/
-├── FINAL_DATASET_cleaned.csv        ← Training data (235K rows)
-├── setup.py                         ← Automated setup script
-├── start.sh / start.bat             ← Launch scripts
+```text
+smart_harvest.ai/
 ├── backend/
-│   ├── app_v2.py                    ← Flask REST API
-│   ├── requirements.txt
-│   ├── ml/
-│   │   ├── train_yield_model_v2.py  ← Yield model training
-│   │   └── train_irrigation_model.py
-│   └── models/
-│       ├── yield_model/             ← Trained yield artifacts
-│       └── irrigation_model/        ← Trained irrigation artifacts
-└── frontend/
-    └── index.html                   ← Single-page UI
+│   ├── app_v2.py
+│   └── frontend.py
+├── routes/
+│   ├── __init__.py
+│   └── chatbot.py
+├── utils/
+│   ├── __init__.py
+│   └── rag_helper.py
+├── static/
+│   ├── css/chatbot-widget.css
+│   └── js/chatbot-widget.js
+├── farming_docs/
+│   ├── all_farming_topics.json
+│   └── all_diseases.json
+├── frontend/
+│   ├── base.html
+│   ├── home.html
+│   ├── yield.html
+│   ├── disease.html
+│   └── dashboard.html
+├── models/                         # deployment inference artifacts only
+│   ├── yield_model/
+│   ├── disease_model.tflite
+│   └── class_labels.json
+├── notebooks/                      # local yield-model analysis/retraining
+├── crop_yield.csv                  # compact yield retraining dataset
+├── ingest_knowledge_base.py        # one-time local Pinecone ingestion
+├── tests/test_app.py
+├── requirements.txt
+└── Procfile
 ```
 
----
+## Quick start
 
-## 🚀 Quick Start
-
-### Option A — Automated (recommended)
 ```bash
+python3 -m venv venv
+source venv/bin/activate
+python3 -m pip install -r requirements.txt
 python3 setup.py
+python3 backend/app_v2.py
 ```
 
-### Option B — Manual
+Open `http://localhost:5001`. For production, use the existing [`Procfile`](Procfile) command with Gunicorn.
 
-**1. Install dependencies**
+### Render deployment
+
+Create a Python web service from this repository with:
+
+```text
+Build command: pip install -r requirements.txt
+Start command:  use the repository Procfile
+Health check:   /api/health
+```
+
+Set `GROQ_API_KEY`, `PINECONE_API_KEY`, `PINECONE_INDEX_NAME`, and a strong random `SECRET_KEY` in Render. Do not upload `.env`. The Procfile intentionally runs one threaded worker because XGBoost, TensorFlow Lite, and the lazily loaded embedding model are memory-heavy. Request recycling limits long-term native-library memory growth, while the 180-second timeout allows for a cold first chatbot request.
+
+### Chatbot configuration and ingestion
+
+Create a Pinecone index with **384 dimensions** and the **cosine** metric. Configure these environment variables locally and in Render (never commit their values):
+
 ```bash
-pip install -r backend/requirements.txt
+export PINECONE_API_KEY="your-key"
+export PINECONE_INDEX_NAME="smart-harvest-knowledge"
+export GROQ_API_KEY="your-key"
 ```
 
-**2. Place dataset**  
-Put `FINAL_DATASET_cleaned.csv` in the project root.
+Run the ingestion once on your local machine after creating the index:
 
-**3. Train models** (already done if models/ folder is populated)
 ```bash
-python3 backend/ml/train_yield_model_v2.py
-python3 backend/ml/train_irrigation_model.py
+python3 ingest_knowledge_base.py
 ```
 
-**4. Start backend**
-```bash
-cd backend && python3 app_v2.py
-# Runs on http://localhost:5001
-```
+The ingestion script preserves each JSON entry as one labeled chunk, generates normalized `sentence-transformers/all-MiniLM-L6-v2` embeddings, and uploads text and metadata to Pinecone. Do **not** add this command to Render's start or build command unless you intentionally want to re-ingest the index.
 
-**5. Start frontend**
-```bash
-cd frontend && python3 -m http.server 8000
-# Open http://localhost:8000
-```
+> **Render memory note:** `tensorflow-cpu` and `sentence-transformers` (which brings PyTorch) together can exceed a 512 MB instance limit. Use at least a paid Starter instance for all features, or split disease inference and chatbot retrieval into separate services. The embedding model is CPU-only and loaded lazily, so normal Flask startup does not load PyTorch immediately.
 
----
+The deployed yield model is the XGBoost pipeline trained from [`crop_yield.csv`](crop_yield.csv) and stored under `models/yield_model/`. The candidate notebook [`notebooks/crop_yield_eda_feature_engineering_xgboost.ipynb`](notebooks/crop_yield_eda_feature_engineering_xgboost.ipynb) is the source of truth for retraining. `Production` is excluded as target leakage.
 
-## 🔌 API Endpoints
+## Data sources and attribution
+
+### Crop-yield data
+
+The file [`crop_yield.csv`](crop_yield.csv) is attributed to the following dataset published on Mendeley Data:
+
+> V, Ramesh; P, Kumaresan (2025), “Stacked Ensemble Model for Accurate Crop Yield Prediction Using Machine Learning Techniques”, Mendeley Data, V2, doi: [10.17632/ncw2vbcgnk.2](https://doi.org/10.17632/ncw2vbcgnk.2).
+
+According to the publisher’s description, the dataset contains 19,689 records covering 27 Indian states and 3 Union Territories from 1997–2020, with 55 crops and the fields Crop, Season, Crop_Year, State, Annual_Rainfall, Area, Production, Pesticide, Fertilizer, and Yield. The dataset is listed under the [CC BY 4.0 licence](https://creativecommons.org/licenses/by/4.0/). This project uses the publisher-provided data for research and prediction, credits the authors, and excludes `Production` from the yield model because it can create target leakage when predicting `Yield`.
+
+The dataset’s publisher and DOI provide an authoritative provenance record. This README does not independently certify the accuracy or completeness of the measurements; users should consult the original record, version, licence, and citation requirements before redistribution or commercial use.
+
+### Plant-disease images
+
+The disease model was trained from the PlantVillage image dataset. The repository keeps only the deployed TensorFlow Lite model and labels; the large training image directory is intentionally excluded from deployment. The original PlantVillage publication is:
+
+> Hughes, D. P., & Salathé, M. (2015), “An open access repository of images on plant health to enable the development of mobile disease diagnostics”, arXiv:1511.08060. [doi:10.48550/arXiv.1511.08060](https://doi.org/10.48550/arXiv.1511.08060).
+
+See the [PlantVillage project repository](https://github.com/spMohanty/PlantVillage-Dataset) and its stated dataset terms before obtaining or redistributing the images. Disease predictions are screening guidance and are not a substitute for expert diagnosis.
+
+### Weather data
+
+Live rainfall and forecast values are retrieved at runtime from [Open-Meteo](https://open-meteo.com/) and its [API documentation](https://open-meteo.com/en/docs). Normal Mode uses the selected state’s centroid for a recent 30-day archive lookup, displays the observed monthly total, and annualizes it for the model because the yield model expects annual rainfall. Open-Meteo attribution and applicable provider data licences should be retained when displaying or redistributing weather results.
+
+### Farming and disease knowledge base
+
+The chatbot knowledge base is the project-maintained content in [`farming_docs/`](farming_docs). It contains structured farming-topic and disease summaries used for Pinecone retrieval; these files are not presented as a replacement for official agricultural guidance. The application uses [Pinecone](https://www.pinecone.io/) for vector retrieval, `all-MiniLM-L6-v2` for local embeddings, and [Groq](https://groq.com/) for response generation. These are service/model providers rather than additional agricultural source datasets.
+
+## API endpoints
 
 | Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/health` | Health check + model status |
-| GET | `/api/options` | Dropdown values (states, crops, seasons) |
-| POST | `/api/predict/yield` | Yield prediction |
-| POST | `/api/predict/irrigation` | Irrigation recommendation |
-| GET | `/api/recent` | Recent prediction history |
+|---|---|---|
+| GET | `/api/health` | Yield and disease model status |
+| GET | `/api/options` | Dataset states, crops, and seasons |
+| POST | `/api/predict/yield` | JSON yield prediction |
+| POST | `/api/predict/disease` | Multipart upload with field `image` |
+| POST | `/chat` | RAG farming assistant; JSON message and optional history |
+| GET | `/api/state-rainfall?state=` | Latest observed 30-day state rainfall and annualized model input |
+| GET | `/api/weather?lat=&lon=` | Open-Meteo seven-day rainfall |
+| GET | `/api/location-data?lat=&lon=` | Regional climate and soil defaults |
+| GET | `/api/recent` | Sample recent predictions |
 
-### Example — Yield Prediction
+### Yield request
+
 ```bash
 curl -X POST http://localhost:5001/api/predict/yield \
-  -H "Content-Type: application/json" \
+  -H 'Content-Type: application/json' \
   -d '{
     "state": "karnataka",
-    "district": "bangalore",
     "crop": "Rice",
-    "crop_year": 2024,
+    "crop_year": 2020,
     "season": "Kharif",
-    "area": 1209,
-    "latitude": 12.97,
-    "longitude": 77.59,
-    "total_rainfall_mm": 1200,
-    "AvgTemp_C": 22.5,
-    "Humidity_perc": 78,
-    "ph": 6.5,
-    "organic_carbon_g_kg": 25,
-    "clay_g_kg": 250,
-    "sand_g_kg": 400
+    "area": 10,
+    "annual_rainfall": 1200,
+    "fertilizer": 1444.9,
+    "pesticide": 2.7
   }'
 ```
 
-Response:
-```json
-{
-  "yield_prediction": 4.213,
-  "unit": "tons/hectare",
-  "confidence_interval": { "low": 3.791, "high": 4.634 },
-  "model_r2": 0.9716
-}
+The response includes `raw_prediction`, the non-negative display prediction, and an MAE-based reference range. Unknown or missing categorical values return HTTP 400 instead of silently mapping to a fallback category. The current model test R² is approximately 0.827 and MAE is approximately 1.382 yield units.
+
+Farmer Mode fetches the selected state's latest observed 30-day rainfall. The UI shows that monthly total and annualizes it before prediction because the model was trained with an annual-rainfall feature. If the weather service is unavailable, the dataset median of 1,247.6 mm is used.
+
+### Disease request
+
+```bash
+curl -X POST http://localhost:5001/api/predict/disease \
+  -F image=@/path/to/leaf.jpg
 ```
 
----
+The service accepts PNG/JPEG uploads up to 8 MB, resizes images to 192×192 RGB, and returns the primary prediction plus the top three classes. Results are screening guidance only and should be confirmed by an agronomist.
 
-## 🧠 Model Details
+### Chat request
 
-### Yield Model
-- **Algorithm**: Random Forest (200 trees) + Gradient Boosting (150 trees) Hybrid (0.6 RF + 0.4 GB)
-- **Features**: state, district, crop, year, season, area, lat/lon, rainfall, temperature, humidity, pH, organic carbon, clay, sand
-- **Target**: Yield (tons/hectare)
-- **R²**: 0.7916
+```bash
+curl -X POST http://localhost:5001/chat \
+  -H 'Content-Type: application/json' \
+  -d '{"message":"How do I manage tomato early blight?","history":[]}'
+```
 
-### Irrigation Model  
-- **Algorithm**: Random Forest Classifier (150 trees)
-- **Classes**: Low / Moderate / High / Very High
-- **Accuracy**: 95.97%
+A successful response contains `reply` and deduplicated `sources`. The server limits history to the latest 12 valid user/assistant messages, retrieves the top three Pinecone passages, and applies a 30-second Groq read timeout. Missing configuration and upstream failures return structured JSON errors without stopping Flask.
+
+The global widget is loaded by these shared-template includes:
+
+```html
+<link rel="stylesheet" href="{{ url_for('static', filename='css/chatbot-widget.css') }}"><script src="{{ url_for('static', filename='js/chatbot-widget.js') }}" defer></script>
+```
+
+## Testing
+
+```bash
+python3 -m compileall -q backend routes utils ingest_knowledge_base.py setup.py tests
+pytest -q tests/test_app.py
+```
+
+## Technology
+
+Python, Flask, Gunicorn, XGBoost, scikit-learn, pandas, NumPy, TensorFlow Lite, Pillow, Pinecone, sentence-transformers, Groq, Jinja2, vanilla JavaScript, and Open-Meteo.

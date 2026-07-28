@@ -1,34 +1,24 @@
 #!/bin/bash
-# Quick deployment script
+# Render deployment reference for Smart Harvest AI.
+# Render uses Procfile automatically; this script only prints the same commands.
 
-echo "🌾 Smart Harvest AI - Deployment Setup"
+ echo "🌾 Smart Harvest AI - Deployment Setup"
 echo "========================================"
 
-# Check if git is initialized
-if [ ! -d .git ]; then
-    echo "📦 Initializing git repository..."
-    git init
-    git add .
-    git commit -m "Initial commit - Smart Harvest AI"
-fi
-
-echo ""
+ echo ""
 echo "✅ Ready to deploy!"
 echo ""
 echo "Choose your deployment platform:"
 echo ""
-echo "1. Render (Recommended)"
-echo "   → Visit: https://render.com"
-echo "   → New Web Service → Connect this repo"
+echo "1. Render"
 echo "   → Build: pip install -r requirements.txt"
-echo "   → Start: gunicorn --chdir backend app_v2:app --bind 0.0.0.0:\$PORT"
+echo "   → Start: Procfile (one memory-safe gthread worker)"
+echo "   → Health check: /api/health"
 echo ""
-echo "2. Railway"
-echo "   → Visit: https://railway.app"
-echo "   → Deploy from GitHub → Select this repo"
+echo "2. Required Render environment variables"
+echo "   → GROQ_API_KEY"
+echo "   → PINECONE_API_KEY"
+echo "   → PINECONE_INDEX_NAME"
+echo "   → SECRET_KEY (recommended)"
 echo ""
-echo "3. Heroku"
-echo "   → Run: heroku create smart-harvest-ai"
-echo "   → Run: git push heroku main"
-echo ""
-echo "📖 Full guide: See DEPLOYMENT.md"
+echo "See README.md for deployment and model details."

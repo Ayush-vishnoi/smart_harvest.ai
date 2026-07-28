@@ -1,0 +1,19 @@
+CROP: Corn (Maize)
+DISEASE: Northern Corn Leaf Blight
+PATHOGEN/CAUSE: Exserohilum turcicum (fungus)
+
+SYMPTOMS:
+Long, elliptical, gray-green to tan lesions (cigar-shaped) on leaves, which can merge to blight large areas of the leaf, reducing photosynthesis and yield significantly if it occurs before or during grain fill.
+
+FAVORABLE CONDITIONS FOR SPREAD:
+Moderate temperatures (18-27°C) with extended periods of high humidity or leaf wetness (dew, rain). Survives in corn residue between seasons.
+
+ORGANIC / NON-CHEMICAL TREATMENT:
+Manage crop residue to reduce fungal carryover. Select resistant hybrids as the primary defense, since organic fungicide options are limited for this disease.
+
+CHEMICAL TREATMENT:
+Foliar fungicides containing strobilurins or triazoles, applied when lesions first appear, particularly if conditions remain favorable and the crop hasn't yet reached grain fill. Confirm with local agronomic recommendations.
+(Note: Always confirm exact product names and dosages with a local agricultural extension officer or product label, as recommendations vary by region and formulation.)
+
+PREVENTION:
+Rotate crops away from corn for at least one season. Plant resistant hybrids. Manage residue through tillage. Avoid continuous corn cropping in the same field where the disease has been previously severe.

@@ -1,0 +1,19 @@
+CROP: Tomato
+DISEASE: Septoria Leaf Spot
+PATHOGEN/CAUSE: Septoria lycopersici (fungus)
+
+SYMPTOMS:
+Numerous small, circular spots with dark brown margins and gray/tan centers, often with tiny black dots (fungal fruiting bodies) visible in the center. Starts on older, lower leaves and progresses upward. Heavy infection causes significant leaf drop.
+
+FAVORABLE CONDITIONS FOR SPREAD:
+Warm, wet, humid weather. Spreads via rain splash, overhead irrigation, and contaminated tools/debris.
+
+ORGANIC / NON-CHEMICAL TREATMENT:
+Remove infected lower leaves as soon as spotted. Copper-based fungicide sprays applied preventively. Mulch soil to reduce spore splash from ground debris.
+
+CHEMICAL TREATMENT:
+Fungicides with chlorothalonil or mancozeb, applied on a 7-10 day schedule during favorable wet conditions. Confirm exact rates with local guidelines.
+(Note: Always confirm exact product names and dosages with a local agricultural extension officer or product label, as recommendations vary by region and formulation.)
+
+PREVENTION:
+Rotate crops away from tomato/solanaceous family for 1-2 years. Avoid overhead watering. Stake plants and prune for airflow. Clean up and destroy plant debris at season end, since the fungus survives on old leaf litter.
