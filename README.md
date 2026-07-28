@@ -12,12 +12,21 @@ AI-powered crop-yield prediction and plant-disease screening for Indian agricult
 
 ## Model performance
 
-| Model | Algorithm | R² | MAE |
-|---|---|---:|---:|
-| Yield prediction | XGBoost | 82.68% | 1.3817 t/ha |
-| Disease screening | MobileNetV3Small → TensorFlow Lite | PlantVillage classes | Top-3 confidence |
+### Crop-yield regression
 
-Yield metrics use a time-based split: 1997–2015 for training and 2016–2020 for testing. The reported MAE is an average error estimate, not a guaranteed prediction interval.
+| Model | Train R² | Test R² | MAE | RMSE |
+|---|---:|---:|---:|---:|
+| XGBoost regression pipeline | 89.29% | 82.68% | 1.3817 t/ha | 2.9512 t/ha |
+
+The production yield model is an `XGBRegressor` with one-hot categorical preprocessing and engineered numeric features. Metrics use a time-based split: 1997–2015 for training and 2016–2020 for testing. The train/test R² gap is 6.61 percentage points. `Production` is excluded because it would introduce target leakage. MAE is an average error estimate, not a guaranteed prediction interval.
+
+### Plant-disease classification
+
+| Model | Accuracy | Weighted precision | Weighted recall | Weighted F1 | Validation images |
+|---|---:|---:|---:|---:|---:|
+| MobileNetV3Small transfer learning → TensorFlow Lite | 81.58% | 83.70% | 81.58% | 81.62% | 4,127 |
+
+These results were measured by running the deployed TensorFlow Lite model on the seeded 20% PlantVillage validation split (seed 123) across 15 classes. Macro precision, recall, and F1 are 79.78%, 83.06%, and 80.26%, respectively. See the complete per-class report and raw confusion-matrix values in [`models/disease_metrics.json`](models/disease_metrics.json), the rendered matrix in [`models/disease_confusion_matrix.png`](models/disease_confusion_matrix.png), and the reproducible evaluator in [`backend/ml/evaluate_disease_model.py`](backend/ml/evaluate_disease_model.py).
 
 ## Project structure
 
@@ -48,7 +57,9 @@ smart_harvest.ai/
 │   ├── yield_model/
 │   ├── disease_model.tflite
 │   └── class_labels.json
-├── notebooks/                      # local yield-model analysis/retraining
+├── notebooks/                      # yield and disease-model reference notebooks
+│   ├── crop_yield_eda_feature_engineering_xgboost.ipynb
+│   └── plant_disease_model_reference.ipynb
 ├── crop_yield.csv                  # compact yield retraining dataset
 ├── ingest_knowledge_base.py        # one-time local Pinecone ingestion
 ├── tests/test_app.py
@@ -116,7 +127,9 @@ The dataset’s publisher and DOI provide an authoritative provenance record. Th
 
 ### Plant-disease images
 
-The disease model was trained from the PlantVillage image dataset. The repository keeps only the deployed TensorFlow Lite model and labels; the large training image directory is intentionally excluded from deployment. The original PlantVillage publication is:
+The disease model was trained from the PlantVillage image dataset using the transfer-learning pipeline in [`backend/ml/train_disease_model.py`](backend/ml/train_disease_model.py). It uses an ImageNet-pretrained MobileNetV3Small backbone, global average pooling, a 128-unit dense layer, dropout, and a 15-class softmax output. Training uses a seeded 80/20 training-validation split, class weighting, image augmentation, frozen-backbone training followed by fine-tuning of the final 40 backbone layers, and 192 × 192 RGB inputs. The deployed model covers healthy and diseased pepper, potato, and tomato leaves; the exact output mapping is stored in [`models/class_labels.json`](models/class_labels.json). The notebook [`notebooks/plant_disease_model_reference.ipynb`](notebooks/plant_disease_model_reference.ipynb) provides a reference view of the architecture, deployed TensorFlow Lite input/output contract, labels, validation metrics, confusion matrix, and single-image inference flow.
+
+The deployed artifact was evaluated without retraining on the reproducible 20% validation split. It achieved 81.58% accuracy, 83.70% weighted precision, 81.58% weighted recall, and 81.62% weighted F1 across 4,127 images. The repository includes the complete evaluation in [`models/disease_metrics.json`](models/disease_metrics.json), the confusion matrix in [`models/disease_confusion_matrix.png`](models/disease_confusion_matrix.png), and the evaluation script in [`backend/ml/evaluate_disease_model.py`](backend/ml/evaluate_disease_model.py). The large source image directory remains excluded from deployment. The original PlantVillage publication is:
 
 > Hughes, D. P., & Salathé, M. (2015), “An open access repository of images on plant health to enable the development of mobile disease diagnostics”, arXiv:1511.08060. [doi:10.48550/arXiv.1511.08060](https://doi.org/10.48550/arXiv.1511.08060).
 
