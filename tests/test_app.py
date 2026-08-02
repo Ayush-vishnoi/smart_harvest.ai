@@ -29,6 +29,8 @@ def test_health_reports_models(client):
     assert response.status_code == 200
     assert response.json["yield_model_loaded"] is True
     assert "disease_model_loaded" in response.json
+    assert response.json["database_connected"] is True
+    assert response.json["database_backend"] in {"sqlite", "postgresql"}
 
 
 def test_dashboard_renders_analytics(client):
@@ -50,6 +52,11 @@ def test_yield_prediction_validates_categories(client):
     assert response.status_code == 200
     assert "raw_prediction" in response.json
     assert response.json["yield_prediction"] >= 0
+
+    recent = client.get("/api/recent?limit=1")
+    assert recent.status_code == 200
+    assert recent.json["recent"][0]["type"] == "yield"
+    assert recent.json["recent"][0]["state"] == payload["state"]
 
     payload["state"] = "not-a-real-state"
     response = client.post("/api/predict/yield", json=payload)
@@ -107,6 +114,13 @@ def test_chat_success(client, monkeypatch):
     )
     assert response.status_code == 200
     assert response.json == {"reply": "Add compost after a soil test.", "sources": ["Soil Health"]}
+
+    from utils.database import ChatInteraction, database
+
+    with database.sessions() as db_session:
+        saved = db_session.query(ChatInteraction).order_by(ChatInteraction.id.desc()).first()
+        assert saved.message == "How can I improve soil?"
+        assert saved.reply == "Add compost after a soil test."
 
 
 def test_chat_handles_retrieval_failure(client, monkeypatch):

@@ -7,8 +7,10 @@ AI-powered crop-yield prediction and plant-disease screening for Indian agricult
 - XGBoost crop-yield prediction using the trained feature set and time-based evaluation.
 - TensorFlow Lite plant-disease classification for PlantVillage leaf images.
 - Pinecone RAG farming assistant using local MiniLM embeddings and Groq Llama 3.3.
+- SQLAlchemy persistence for yield predictions, disease predictions, and successful chatbot interactions.
+- SQLite support for local development and managed PostgreSQL support for production deployment.
 - Server-rendered web UI at `/yield` and `/disease`, with an accessible floating chatbot on every page.
-- REST APIs for health, model options, yield prediction, disease prediction, chat, weather, and regional defaults.
+- REST APIs for health, model options, yield prediction, disease prediction, persisted history, chat, weather, and regional defaults.
 
 ## Model performance
 
@@ -79,9 +81,28 @@ python3 backend/app_v2.py
 
 Open `http://localhost:5001`. For production, use the existing [`Procfile`](Procfile) command with Gunicorn.
 
+### Database configuration
+
+The application persists yield predictions, disease predictions, and successful chatbot interactions. It uses SQLAlchemy and creates the schema automatically on startup. This supports local development with SQLite and production deployment with managed PostgreSQL:
+
+- Local: omit `DATABASE_URL`; the database is created at `instance/smart_harvest.db`.
+- Render/production: provision a managed PostgreSQL database and set its `DATABASE_URL` environment variable. The app converts Render's `postgres://` format automatically.
+- Do not use SQLite for production because ephemeral service filesystems can lose data during redeploys or restarts.
+- Existing tables are preserved; schema creation is idempotent. Use the `/api/health` response to verify `database_connected`.
+
 ### Render deployment
 
-Create a Python web service from this repository with:
+#### 1. Push the application
+
+Commit all source changes, including `utils/database.py`, `requirements.txt`, and this README, then push the branch connected to Render. Never commit `.env`, database files, or real credentials.
+
+#### 2. Provision PostgreSQL
+
+Create a managed PostgreSQL database in Render. In the web service's environment settings, add `DATABASE_URL` using the database's **Internal Database URL**. The application accepts both `postgres://` and `postgresql://` URLs and configures the Psycopg driver automatically.
+
+#### 3. Configure the web service
+
+Create or update the Python web service with:
 
 ```text
 Build command: pip install -r requirements.txt
@@ -89,7 +110,33 @@ Start command:  use the repository Procfile
 Health check:   /api/health
 ```
 
-Set `GROQ_API_KEY`, `PINECONE_API_KEY`, `PINECONE_INDEX_NAME`, and a strong random `SECRET_KEY` in Render. Do not upload `.env`. The Procfile intentionally runs one threaded worker because XGBoost, TensorFlow Lite, and the lazily loaded embedding model are memory-heavy. Request recycling limits long-term native-library memory growth, while the 180-second timeout allows for a cold first chatbot request.
+Configure these environment variables in Render:
+
+| Variable | Required | Purpose |
+|---|---|---|
+| `DATABASE_URL` | Yes for persistent production data | Render PostgreSQL Internal Database URL |
+| `SECRET_KEY` | Yes | Long, random Flask session-signing secret |
+| `GROQ_API_KEY` | Yes for chatbot | Groq API credential |
+| `PINECONE_API_KEY` | Yes for chatbot | Pinecone API credential |
+| `PINECONE_INDEX_NAME` | Yes for chatbot | Name of the ingested 384-dimensional index |
+
+Do not upload `.env` or place secrets in GitHub. The Procfile intentionally runs one threaded worker because XGBoost, TensorFlow Lite, and the lazily loaded embedding model are memory-heavy. Request recycling limits long-term native-library memory growth, while the 180-second timeout allows for a cold first chatbot request.
+
+#### 4. Verify the deployment
+
+After deployment, request `/api/health`. A correctly connected production database reports:
+
+```json
+{
+  "status": "ok",
+  "database_connected": true,
+  "database_backend": "postgresql"
+}
+```
+
+The response also reports yield and disease model availability. Submit a yield prediction and then request `/api/recent?limit=1` to verify that the record was persisted. Tables are created automatically on startup; no separate initialization command is needed for the current schema.
+
+> **Important:** If `DATABASE_URL` is missing, the service falls back to SQLite and can start successfully, but records can be lost whenever Render replaces or restarts the service instance. PostgreSQL is therefore required for durable production storage.
 
 ### Chatbot configuration and ingestion
 
@@ -147,7 +194,7 @@ The chatbot knowledge base is the project-maintained content in [`farming_docs/`
 
 | Method | Endpoint | Description |
 |---|---|---|
-| GET | `/api/health` | Yield and disease model status |
+| GET | `/api/health` | Yield, disease model, and database status |
 | GET | `/api/options` | Dataset states, crops, and seasons |
 | POST | `/api/predict/yield` | JSON yield prediction |
 | POST | `/api/predict/disease` | Multipart upload with field `image` |
@@ -155,7 +202,7 @@ The chatbot knowledge base is the project-maintained content in [`farming_docs/`
 | GET | `/api/state-rainfall?state=` | Latest observed 30-day state rainfall and annualized model input |
 | GET | `/api/weather?lat=&lon=` | Open-Meteo seven-day rainfall |
 | GET | `/api/location-data?lat=&lon=` | Regional climate and soil defaults |
-| GET | `/api/recent` | Sample recent predictions |
+| GET | `/api/recent` | Persisted recent predictions |
 
 ### Yield request
 
@@ -210,6 +257,21 @@ python3 -m compileall -q backend routes utils ingest_knowledge_base.py setup.py 
 pytest -q tests/test_app.py
 ```
 
+Current validation result: **9 tests passed**. The suite covers application health, database connectivity, persisted yield history, chatbot persistence, model endpoints, validation, and upstream-service failure handling.
+
+## Production readiness checklist
+
+- [x] Gunicorn production command is defined in `Procfile`.
+- [x] SQLAlchemy initializes the database schema safely at startup.
+- [x] SQLite is available for zero-configuration local development.
+- [x] PostgreSQL and Psycopg are included for Render deployment.
+- [x] Predictions and successful chatbot interactions are persisted.
+- [x] Database status is exposed through `/api/health`.
+- [x] Local database files and `.env` are excluded from Git.
+- [ ] A managed PostgreSQL database must be created in the target Render account.
+- [ ] Production environment variables must be added in the Render dashboard.
+- [ ] `/api/health` and `/api/recent` must be checked after the final deployment.
+
 ## Technology
 
-Python, Flask, Gunicorn, XGBoost, scikit-learn, pandas, NumPy, TensorFlow Lite, Pillow, Pinecone, sentence-transformers, Groq, Jinja2, vanilla JavaScript, and Open-Meteo.
+Python, Flask, Gunicorn, SQLAlchemy, PostgreSQL, SQLite, XGBoost, scikit-learn, pandas, NumPy, TensorFlow Lite, Pillow, Pinecone, sentence-transformers, Groq, Jinja2, vanilla JavaScript, and Open-Meteo.

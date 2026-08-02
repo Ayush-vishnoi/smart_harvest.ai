@@ -3,6 +3,7 @@ from pathlib import Path
 
 import pandas as pd
 from flask import render_template, request, redirect, url_for, session
+from utils.database import database
 
 
 class FrontendController:
@@ -64,6 +65,7 @@ class FrontendController:
                     "area":   area,
                     "mode":   mode
                 }
+                database.save_prediction("yield", payload, result, result_value=pred)
                 session['yield_result']    = result
                 session['yield_form_data'] = form_data
                 return redirect(url_for('web_yield', mode=mode))

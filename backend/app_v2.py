@@ -24,6 +24,7 @@ import pandas as pd
 from flask import Flask, jsonify, request, Response
 from frontend import FrontendController, register_frontend_routes
 from routes.chatbot import chatbot_bp
+from utils.database import database
 from yield_inference import YieldInference
 
 try:
@@ -45,6 +46,7 @@ app = Flask(__name__,
     static_folder=str(BASE_DIR / 'static')
 )
 app.secret_key = os.environ.get('SECRET_KEY', 'smart_harvest_ai_secret_key_2024')
+database.init_app(app)
 app.register_blueprint(chatbot_bp)
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
@@ -159,6 +161,8 @@ def health():
         "models_loaded": MODELS_LOADED,
         "yield_model_loaded": MODELS_LOADED,
         "disease_model_loaded": DISEASE_LOADED,
+        "database_connected": database.is_healthy(),
+        "database_backend": database.backend_name,
         "version": "2.1.0"
     })
 
@@ -179,10 +183,12 @@ def predict_yield():
         if not isinstance(data, dict):
             raise ValueError("JSON object required")
         pred, raw_pred = yield_service.predict(data)
-        return jsonify({"yield_prediction": round(pred, 4), "unit": "tons/hectare",
-                        "raw_prediction": round(raw_pred, 4),
-                        "confidence_interval": {"low": round(max(0, pred-y_metrics.get("mae", 0)), 4), "high": round(pred+y_metrics.get("mae", 0), 4)},
-                        "model_r2": y_metrics.get("r2", 0), "model_mae": y_metrics.get("mae", 0)})
+        response = {"yield_prediction": round(pred, 4), "unit": "tons/hectare",
+                    "raw_prediction": round(raw_pred, 4),
+                    "confidence_interval": {"low": round(max(0, pred-y_metrics.get("mae", 0)), 4), "high": round(pred+y_metrics.get("mae", 0), 4)},
+                    "model_r2": y_metrics.get("r2", 0), "model_mae": y_metrics.get("mae", 0)}
+        database.save_prediction("yield", data, response, result_value=pred)
+        return jsonify(response)
     except ValueError as e:
         return jsonify({"error": str(e)}), 400
     except Exception as e:
@@ -199,7 +205,12 @@ def predict_disease():
     try:
         image = Image.open(upload.stream)
         predictions = _predict_disease(image)
-        return jsonify({"success": True, "prediction": predictions[0], "top_predictions": predictions})
+        response = {"success": True, "prediction": predictions[0], "top_predictions": predictions}
+        database.save_prediction(
+            "disease", {"filename": upload.filename}, response,
+            result_label=predictions[0]["label"], confidence=predictions[0]["confidence"],
+        )
+        return jsonify(response)
     except Exception as e:
         log.warning("Disease prediction failed: %s", e)
         return jsonify({"error": "Invalid or unsupported image"}), 400
@@ -210,11 +221,7 @@ def predict_irrigation():
 
 @app.route("/api/recent", methods=["GET"])
 def recent_predictions():
-    return jsonify({"recent": [
-        {"state": "karnataka", "crop": "Rice",   "yield": 4.21, "irrigation": "Moderate"},
-        {"state": "punjab",    "crop": "Wheat",  "yield": 5.83, "irrigation": "High"},
-        {"state": "gujarat",   "crop": "Cotton", "yield": 2.97, "irrigation": "Very High"},
-    ]})
+    return jsonify({"recent": database.recent_predictions(request.args.get("limit", 10, type=int))})
 
 STATE_CENTROIDS = {
     "andhra pradesh": (15.9129, 79.7400), "assam": (26.2006, 92.9376),

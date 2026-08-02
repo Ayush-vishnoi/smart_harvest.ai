@@ -8,6 +8,7 @@ from typing import Any
 import requests
 from flask import Blueprint, jsonify, request
 
+from utils.database import database
 from utils.rag_helper import retrieve_relevant_chunks
 
 chatbot_bp = Blueprint("chatbot", __name__)
@@ -124,4 +125,6 @@ def chat():
         log.exception("Groq returned an invalid response")
         return jsonify({"error": "The farming assistant returned an invalid response"}), 502
 
-    return jsonify({"reply": reply, "sources": _source_titles(chunks)})
+    sources = _source_titles(chunks)
+    database.save_chat(message, reply, sources)
+    return jsonify({"reply": reply, "sources": sources})
