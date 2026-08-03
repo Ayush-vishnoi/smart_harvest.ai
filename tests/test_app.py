@@ -31,6 +31,10 @@ def test_health_reports_models(client):
     assert "disease_model_loaded" in response.json
     assert response.json["database_connected"] is True
     assert response.json["database_backend"] in {"sqlite", "postgresql"}
+    assert isinstance(response.json["chatbot_configured"], bool)
+    assert isinstance(response.json["chatbot_groq_configured"], bool)
+    assert isinstance(response.json["chatbot_pinecone_configured"], bool)
+    assert isinstance(response.json["chatbot_missing_environment_variables"], list)
 
 
 def test_dashboard_renders_analytics(client):
@@ -89,6 +93,13 @@ def test_chat_requires_message(client):
     response = client.post("/chat", json={"history": []})
     assert response.status_code == 400
     assert response.json["error"] == "message is required"
+
+
+def test_chat_reports_missing_groq_configuration(client, monkeypatch):
+    monkeypatch.delenv("GROQ_API_KEY", raising=False)
+    response = client.post("/chat", json={"message": "How should I water tomatoes?"})
+    assert response.status_code == 503
+    assert response.json["error"] == "Chat service is not configured"
 
 
 def test_chat_success(client, monkeypatch):

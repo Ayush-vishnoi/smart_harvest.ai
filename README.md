@@ -124,15 +124,21 @@ Do not upload `.env` or place secrets in GitHub. The Procfile intentionally runs
 
 #### 4. Verify the deployment
 
-After deployment, request `/api/health`. A correctly connected production database reports:
+After deployment, request `/api/health`. A correctly connected production database and configured chatbot report:
 
 ```json
 {
   "status": "ok",
   "database_connected": true,
-  "database_backend": "postgresql"
+  "database_backend": "postgresql",
+  "chatbot_configured": true,
+  "chatbot_groq_configured": true,
+  "chatbot_pinecone_configured": true,
+  "chatbot_missing_environment_variables": []
 }
 ```
+
+If the widget displays `Chat service is not configured`, `GROQ_API_KEY` is absent or blank in the **web service's** Render environment. Add the key under Render → Web Service → Environment (not only in a local `.env` file), save the changes, and redeploy/restart the service. If `chatbot_configured` remains false, use `chatbot_missing_environment_variables` to identify the exact missing variable. Render does not receive the repository's ignored local `.env` file.
 
 The response also reports yield and disease model availability. Submit a yield prediction and then request `/api/recent?limit=1` to verify that the record was persisted. Tables are created automatically on startup; no separate initialization command is needed for the current schema.
 

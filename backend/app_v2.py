@@ -23,7 +23,7 @@ import numpy as np
 import pandas as pd
 from flask import Flask, jsonify, request, Response
 from frontend import FrontendController, register_frontend_routes
-from routes.chatbot import chatbot_bp
+from routes.chatbot import chatbot_bp, chatbot_configuration_status
 from utils.database import database
 from yield_inference import YieldInference
 
@@ -156,6 +156,7 @@ def _predict_disease(image):
 
 @app.route("/api/health", methods=["GET"])
 def health():
+    chat_status = chatbot_configuration_status()
     return jsonify({
         "status": "ok",
         "models_loaded": MODELS_LOADED,
@@ -163,7 +164,11 @@ def health():
         "disease_model_loaded": DISEASE_LOADED,
         "database_connected": database.is_healthy(),
         "database_backend": database.backend_name,
-        "version": "2.1.0"
+        "chatbot_configured": chat_status["configured"],
+        "chatbot_groq_configured": chat_status["groq_configured"],
+        "chatbot_pinecone_configured": chat_status["pinecone_configured"],
+        "chatbot_missing_environment_variables": chat_status["missing_environment_variables"],
+        "version": "2.2.0"
     })
 
 @app.route("/api/options", methods=["GET"])

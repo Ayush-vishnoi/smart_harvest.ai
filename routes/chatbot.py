@@ -26,6 +26,18 @@ SYSTEM_PROMPT = (
 )
 MAX_MESSAGE_LENGTH = 2000
 MAX_HISTORY_MESSAGES = 12
+CHAT_ENVIRONMENT_VARIABLES = ("GROQ_API_KEY", "PINECONE_API_KEY", "PINECONE_INDEX_NAME")
+
+
+def chatbot_configuration_status() -> dict[str, Any]:
+    """Return non-secret chatbot configuration diagnostics for health checks."""
+    missing = [name for name in CHAT_ENVIRONMENT_VARIABLES if not os.environ.get(name, "").strip()]
+    return {
+        "configured": not missing,
+        "groq_configured": "GROQ_API_KEY" not in missing,
+        "pinecone_configured": not any(name in missing for name in ("PINECONE_API_KEY", "PINECONE_INDEX_NAME")),
+        "missing_environment_variables": missing,
+    }
 
 
 def _clean_history(value: Any) -> list[dict[str, str]]:
@@ -76,8 +88,9 @@ def chat():
     except ValueError as exc:
         return jsonify({"error": str(exc)}), 400
 
-    groq_api_key = os.environ.get("GROQ_API_KEY")
+    groq_api_key = os.environ.get("GROQ_API_KEY", "").strip()
     if not groq_api_key:
+        log.error("Chat request rejected: GROQ_API_KEY is missing from the deployment environment")
         return jsonify({"error": "Chat service is not configured"}), 503
 
     try:
