@@ -6,7 +6,7 @@ AI-powered crop-yield prediction and plant-disease screening for Indian agricult
 
 - XGBoost crop-yield prediction using the trained feature set and time-based evaluation.
 - TensorFlow Lite plant-disease classification for PlantVillage leaf images.
-- Pinecone RAG farming assistant using local MiniLM embeddings and Groq Llama 3.3.
+- Memory-safe local RAG farming assistant using checked-in farming documents and Groq Llama 3.3.
 - SQLAlchemy persistence for yield predictions, disease predictions, and successful chatbot interactions.
 - SQLite support for local development and managed PostgreSQL support for production deployment.
 - Server-rendered web UI at `/yield` and `/disease`, with an accessible floating chatbot on every page.
@@ -117,8 +117,6 @@ Configure these environment variables in Render:
 | `DATABASE_URL` | Yes for persistent production data | Render PostgreSQL Internal Database URL |
 | `SECRET_KEY` | Yes | Long, random Flask session-signing secret |
 | `GROQ_API_KEY` | Yes for chatbot | Groq API credential |
-| `PINECONE_API_KEY` | Yes for chatbot | Pinecone API credential |
-| `PINECONE_INDEX_NAME` | Yes for chatbot | Name of the ingested 384-dimensional index |
 
 Do not upload `.env` or place secrets in GitHub. The Procfile intentionally runs one threaded worker because XGBoost, TensorFlow Lite, and the lazily loaded embedding model are memory-heavy. Request recycling limits long-term native-library memory growth, while the 180-second timeout allows for a cold first chatbot request.
 
@@ -133,7 +131,7 @@ After deployment, request `/api/health`. A correctly connected production databa
   "database_backend": "postgresql",
   "chatbot_configured": true,
   "chatbot_groq_configured": true,
-  "chatbot_pinecone_configured": true,
+  "chatbot_retrieval_backend": "local",
   "chatbot_missing_environment_variables": []
 }
 ```
@@ -144,25 +142,15 @@ The response also reports yield and disease model availability. Submit a yield p
 
 > **Important:** If `DATABASE_URL` is missing, the service falls back to SQLite and can start successfully, but records can be lost whenever Render replaces or restarts the service instance. PostgreSQL is therefore required for durable production storage.
 
-### Chatbot configuration and ingestion
+### Chatbot configuration
 
-Create a Pinecone index with **384 dimensions** and the **cosine** metric. Configure these environment variables locally and in Render (never commit their values):
+Configure the Groq credential locally and in Render (never commit its value):
 
 ```bash
-export PINECONE_API_KEY="your-key"
-export PINECONE_INDEX_NAME="smart-harvest-knowledge"
 export GROQ_API_KEY="your-key"
 ```
 
-Run the ingestion once on your local machine after creating the index:
-
-```bash
-python3 ingest_knowledge_base.py
-```
-
-The ingestion script preserves each JSON entry as one labeled chunk, generates normalized `sentence-transformers/all-MiniLM-L6-v2` embeddings, and uploads text and metadata to Pinecone. Do **not** add this command to Render's start or build command unless you intentionally want to re-ingest the index.
-
-> **Render memory note:** `tensorflow-cpu` and `sentence-transformers` (which brings PyTorch) together can exceed a 512 MB instance limit. Use at least a paid Starter instance for all features, or split disease inference and chatbot retrieval into separate services. The embedding model is CPU-only and loaded lazily, so normal Flask startup does not load PyTorch immediately.
+Retrieval ranks the checked-in text files under `farming_docs/` locally. It does not load PyTorch or contact Pinecone during chat requests, avoiding worker crashes on memory-constrained Render services. The legacy Pinecone ingestion script remains available for offline experiments but is not required by the deployed chatbot.
 
 The deployed yield model is the XGBoost pipeline trained from [`crop_yield.csv`](crop_yield.csv) and stored under `models/yield_model/`. The candidate notebook [`notebooks/crop_yield_eda_feature_engineering_xgboost.ipynb`](notebooks/crop_yield_eda_feature_engineering_xgboost.ipynb) is the source of truth for retraining. `Production` is excluded as target leakage.
 
@@ -194,7 +182,7 @@ Live rainfall and forecast values are retrieved at runtime from [Open-Meteo](htt
 
 ### Farming and disease knowledge base
 
-The chatbot knowledge base is the project-maintained content in [`farming_docs/`](farming_docs). It contains structured farming-topic and disease summaries used for Pinecone retrieval; these files are not presented as a replacement for official agricultural guidance. The application uses [Pinecone](https://www.pinecone.io/) for vector retrieval, `all-MiniLM-L6-v2` for local embeddings, and [Groq](https://groq.com/) for response generation. These are service/model providers rather than additional agricultural source datasets.
+The chatbot knowledge base is the project-maintained content in [`farming_docs/`](farming_docs). It contains farming-topic and disease summaries ranked locally during retrieval; these files are not presented as a replacement for official agricultural guidance. The application uses [Groq](https://groq.com/) for response generation.
 
 ## API endpoints
 

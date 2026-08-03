@@ -166,7 +166,7 @@ def health():
         "database_backend": database.backend_name,
         "chatbot_configured": chat_status["configured"],
         "chatbot_groq_configured": chat_status["groq_configured"],
-        "chatbot_pinecone_configured": chat_status["pinecone_configured"],
+        "chatbot_retrieval_backend": chat_status["retrieval_backend"],
         "chatbot_missing_environment_variables": chat_status["missing_environment_variables"],
         "version": "2.2.0"
     })

@@ -128,18 +128,30 @@
             try {
                 const response = await fetch("/chat", {
                     method: "POST",
-                    headers: {"Content-Type": "application/json"},
+                    headers: {"Content-Type": "application/json", "Accept": "application/json"},
                     body: JSON.stringify({message, history: priorHistory}),
                 });
-                const data = await response.json().catch(() => ({}));
-                if (!response.ok) throw new Error(data.error || "Unable to contact the farming assistant.");
+                const contentType = response.headers.get("content-type") || "";
+                const data = contentType.includes("application/json")
+                    ? await response.json()
+                    : {};
+                if (!response.ok) {
+                    const detail = data.error || `Chat request failed (HTTP ${response.status}).`;
+                    throw new Error(detail);
+                }
+                if (!data.reply || typeof data.reply !== "string") {
+                    throw new Error("The farming assistant returned an invalid response.");
+                }
                 typing.remove();
                 addMessage("assistant", data.reply, Array.isArray(data.sources) ? data.sources : []);
                 history.push({role: "user", content: message}, {role: "assistant", content: data.reply});
                 if (history.length > 24) history.splice(0, history.length - 24);
             } catch (error) {
                 typing.remove();
-                addMessage("assistant", error.message || "The farming assistant is temporarily unavailable. Please try again.");
+                const message = error instanceof TypeError
+                    ? "Unable to reach the chat service. Check that the deployed service is running."
+                    : (error.message || "The farming assistant is temporarily unavailable. Please try again.");
+                addMessage("assistant", message);
             } finally {
                 waiting = false;
                 send.disabled = false;

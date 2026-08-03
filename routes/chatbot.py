@@ -26,7 +26,7 @@ SYSTEM_PROMPT = (
 )
 MAX_MESSAGE_LENGTH = 2000
 MAX_HISTORY_MESSAGES = 12
-CHAT_ENVIRONMENT_VARIABLES = ("GROQ_API_KEY", "PINECONE_API_KEY", "PINECONE_INDEX_NAME")
+CHAT_ENVIRONMENT_VARIABLES = ("GROQ_API_KEY",)
 
 
 def chatbot_configuration_status() -> dict[str, Any]:
@@ -35,7 +35,7 @@ def chatbot_configuration_status() -> dict[str, Any]:
     return {
         "configured": not missing,
         "groq_configured": "GROQ_API_KEY" not in missing,
-        "pinecone_configured": not any(name in missing for name in ("PINECONE_API_KEY", "PINECONE_INDEX_NAME")),
+        "retrieval_backend": "local",
         "missing_environment_variables": missing,
     }
 
@@ -96,10 +96,10 @@ def chat():
     try:
         chunks = retrieve_relevant_chunks(message, top_k=3)
     except RuntimeError as exc:
-        log.warning("RAG configuration error: %s", exc)
-        return jsonify({"error": "Knowledge retrieval is not configured"}), 503
+        log.warning("RAG knowledge-base error: %s", exc)
+        return jsonify({"error": "Knowledge retrieval is unavailable"}), 503
     except Exception:
-        log.exception("Pinecone retrieval failed")
+        log.exception("Local knowledge retrieval failed")
         return jsonify({"error": "Knowledge retrieval is temporarily unavailable"}), 502
 
     context = "\n\n---\n\n".join(chunk["text"] for chunk in chunks)

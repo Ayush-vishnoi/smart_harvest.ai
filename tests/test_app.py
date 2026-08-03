@@ -33,7 +33,7 @@ def test_health_reports_models(client):
     assert response.json["database_backend"] in {"sqlite", "postgresql"}
     assert isinstance(response.json["chatbot_configured"], bool)
     assert isinstance(response.json["chatbot_groq_configured"], bool)
-    assert isinstance(response.json["chatbot_pinecone_configured"], bool)
+    assert response.json["chatbot_retrieval_backend"] == "local"
     assert isinstance(response.json["chatbot_missing_environment_variables"], list)
 
 
@@ -100,6 +100,15 @@ def test_chat_reports_missing_groq_configuration(client, monkeypatch):
     response = client.post("/chat", json={"message": "How should I water tomatoes?"})
     assert response.status_code == 503
     assert response.json["error"] == "Chat service is not configured"
+
+
+def test_local_rag_retrieves_relevant_farming_document():
+    from utils.rag_helper import retrieve_relevant_chunks
+
+    chunks = retrieve_relevant_chunks("How can I manage tomato early blight?", top_k=3)
+    assert chunks
+    assert any("Tomato" in chunk["metadata"]["title"] for chunk in chunks)
+    assert all(chunk["text"] for chunk in chunks)
 
 
 def test_chat_success(client, monkeypatch):
